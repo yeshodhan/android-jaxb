@@ -5,18 +5,25 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Namespace;
 import org.simpleframework.xml.Root;
 
+
+/**
+ * Person<br>
+ * Generated using: xsd-to-simplexml generator.<br>
+ * @link https://github.com/yeshodhan/android-jaxb
+ * 
+ */
 @Root(name = "Person")
 @Namespace(reference = "http://person.mickoo.com/")
 public class Person {
 
     @Element(name = "FirstName", required = false)
-    public String firstName;
+    private String firstName;
     @Element(name = "LastName", required = false)
-    public String lastName;
-    @Element(name = "Is_Adult", required = false)
-    public Boolean isAdult;
-    @Element(name = "Country_Of_Birth", required = false)
-    public String countryOfBirth;
+    private String lastName;
+    @Element(name = "Adult", required = false)
+    private Boolean adult;
+    @Element(name = "Addresses", required = false)
+    private Addresses addresses;
 
     public Person() {
     }
@@ -37,20 +44,20 @@ public class Person {
         this.lastName = lastName;
     }
 
-    public Boolean isAdult() {
-        return isAdult;
+    public Boolean getAdult() {
+        return adult;
     }
 
-    public void setIsAdult(Boolean isAdult) {
-        this.isAdult = isAdult;
+    public void setAdult(Boolean adult) {
+        this.adult = adult;
     }
 
-    public String getCountryOfBirth() {
-        return countryOfBirth;
+    public Addresses getAddresses() {
+        return addresses;
     }
 
-    public void setCountryOfBirth(String countryOfBirth) {
-        this.countryOfBirth = countryOfBirth;
+    public void setAddresses(Addresses addresses) {
+        this.addresses = addresses;
     }
 
 }

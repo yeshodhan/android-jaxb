@@ -53,7 +53,7 @@ public class CodeGenerator {
         jDocComment.add("<br>\n");
         jDocComment.add("Generated using: xsd-to-simplexml generator.");
         jDocComment.add("<br>\n");
-        jDocComment.add("{@link https://github.com/yeshodhan/xsd-to-simplexml}");
+        jDocComment.add("@link https://github.com/yeshodhan/android-jaxb");
 
         generatedClasses.put(qualifiedClassName, generatedClass);
         return generatedClass;

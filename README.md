@@ -50,6 +50,7 @@ Library works to convert simple XSD files without inheritance and multiple names
 
 ```java
 
+
 package com.mickoo.person;
 
 import org.simpleframework.xml.Element;
@@ -60,7 +61,7 @@ import org.simpleframework.xml.Root;
 /**
  * Person<br>
  * Generated using: xsd-to-simplexml generator.<br>
- * {@link https://github.com/yeshodhan/xsd-to-simplexml}
+ * @link https://github.com/yeshodhan/android-jaxb
  * 
  */
 @Root(name = "Person")
@@ -68,13 +69,13 @@ import org.simpleframework.xml.Root;
 public class Person {
 
     @Element(name = "FirstName", required = false)
-    public String firstName;
+    private String firstName;
     @Element(name = "LastName", required = false)
-    public String lastName;
+    private String lastName;
     @Element(name = "Adult", required = false)
-    public Boolean adult;
-    @Element(name = "Addresses", required = true)
-    public Addresses addresses;
+    private Boolean adult;
+    @Element(name = "Addresses", required = false)
+    private Addresses addresses;
 
     public Person() {
     }
@@ -114,38 +115,43 @@ public class Person {
 }
 
 
+
+
 package com.mickoo.person;
 
-import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Namespace;
 import org.simpleframework.xml.Root;
+
+import java.util.List;
 
 
 /**
  * Addresses<br>
  * Generated using: xsd-to-simplexml generator.<br>
- * {@link https://github.com/yeshodhan/xsd-to-simplexml}
+ * @link https://github.com/yeshodhan/android-jaxb
  * 
  */
 @Root(name = "Addresses")
 @Namespace(reference = "http://person.mickoo.com/")
 public class Addresses {
 
-    @Element(name = "Address", required = true)
-    public Address address;
+    @ElementList(name = "Address", inline = true, required = false)
+    private List<Address> address;
 
     public Addresses() {
     }
 
-    public Address getAddress() {
+    public List<Address> getAddress() {
         return address;
     }
 
-    public void setAddress(Address address) {
+    public void setAddress(List<Address> address) {
         this.address = address;
     }
 
 }
+
 
 
 package com.mickoo.person;
@@ -158,7 +164,7 @@ import org.simpleframework.xml.Root;
 /**
  * Address<br>
  * Generated using: xsd-to-simplexml generator.<br>
- * {@link https://github.com/yeshodhan/xsd-to-simplexml}
+ * @link https://github.com/yeshodhan/android-jaxb
  * 
  */
 @Root(name = "Address")
@@ -166,17 +172,17 @@ import org.simpleframework.xml.Root;
 public class Address {
 
     @Element(name = "Line1", required = false)
-    public String line1;
+    private String line1;
     @Element(name = "Line2", required = false)
-    public String line2;
+    private String line2;
     @Element(name = "City", required = false)
-    public String city;
+    private String city;
     @Element(name = "State", required = false)
-    public String state;
+    private String state;
     @Element(name = "Country", required = true)
-    public String country;
+    private String country;
     @Element(name = "PostalCode", required = false)
-    public String postalCode;
+    private String postalCode;
 
     public Address() {
     }
@@ -231,6 +237,70 @@ public class Address {
 
 }
 
+
+```
+
+#### Serialized XML
+
+##### Sample Code to serialize XML from generated Java Classes
+
+```java
+        Serializer serializer = new Persister();
+        Person person = new Person();
+        person.setFirstName("John");
+        person.setLastName("Doe");
+        person.setAdult(true);
+
+        Addresses addresses = new Addresses();
+        person.setAddresses(addresses);
+
+        List<Address> addressList = new ArrayList<Address>();
+        addresses.setAddress(addressList);
+
+        Address address = new Address();
+        addressList.add(address);
+        address.setLine1("1 Main Street");
+        address.setLine2("Apt 12");
+        address.setCity("San Jose");
+        address.setState("California");
+        address.setCountry("United States");
+
+        address = new Address();
+        addressList.add(address);
+        address.setLine1("2 Main Street");
+        address.setLine2("Apt 14");
+        address.setCity("San Jose");
+        address.setState("California");
+        address.setCountry("United States");
+
+        File result = new File(TEST_RESOURCES_DIR+"/person.xml");
+        serializer.write(person, result);
+```
+##### XML Output
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<Person xmlns="http://person.mickoo.com/">
+   <FirstName>John</FirstName>
+   <LastName>Doe</LastName>
+   <Adult>true</Adult>
+   <Addresses>
+      <Address>
+         <Line1>1 Main Street</Line1>
+         <Line2>Apt 12</Line2>
+         <City>San Jose</City>
+         <State>California</State>
+         <Country>United States</Country>
+      </Address>
+      <Address>
+         <Line1>2 Main Street</Line1>
+         <Line2>Apt 14</Line2>
+         <City>San Jose</City>
+         <State>California</State>
+         <Country>United States</Country>
+      </Address>
+   </Addresses>
+</Person>
 ```
 
 

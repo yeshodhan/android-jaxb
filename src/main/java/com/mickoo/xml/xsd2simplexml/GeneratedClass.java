@@ -4,6 +4,7 @@ import com.sun.codemodel.*;
 import com.sun.xml.internal.bind.api.impl.NameConverter;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
 
 import java.util.HashSet;
 import java.util.List;
@@ -38,16 +39,11 @@ public class GeneratedClass {
             JClass propertyClass = (JClass) type;
             JClass listClass = codeModel.ref(List.class);
             JClass fieldClass = listClass.narrow(propertyClass);
-            JFieldVar jField = generatedClass.field(JMod.PUBLIC, fieldClass, fieldName);
+            JFieldVar jField = generatedClass.field(JMod.PRIVATE, fieldClass, fieldName);
 
-            JAnnotationUse jAnnotationUse = null;
-            if(attribute){
-                jAnnotationUse = jField.annotate(Attribute.class);
-            } else {
-                jAnnotationUse = jField.annotate(Element.class);
-            }
-
+            JAnnotationUse jAnnotationUse = jField.annotate(ElementList.class);
             jAnnotationUse.param("name", name);
+            jAnnotationUse.param("inline", true);
             if(minOccurs == 0) {
                 jAnnotationUse.param("required", false);
                 addGetterSetter(jField, fieldName, type, false);
@@ -58,7 +54,7 @@ public class GeneratedClass {
 
         } else {
 
-            JFieldVar jField = generatedClass.field(JMod.PUBLIC, type, fieldName);
+            JFieldVar jField = generatedClass.field(JMod.PRIVATE, type, fieldName);
             JAnnotationUse jAnnotationUse = null;
             if(attribute){
                 jAnnotationUse = jField.annotate(Attribute.class);

@@ -224,10 +224,10 @@ public class SchemaParser {
         if (element.getType().isComplexType()) {
             GeneratedClass parentClass = parseContext.currentClass;
             parseContext.currentClass = codeGenerator.createElement(element.getTargetNamespace(), element.getName());
-            processComplexType(element.getType().asComplexType(), parseContext);
             if(parentClass != null) {
                 parentClass.addElement(parseContext.currentClass.codeModel.parseType(NameConverter.smart.toClassName(element.getName())), element.getName(), parseContext.minOccurs, parseContext.maxOccurs == -1, false);
             }
+            processComplexType(element.getType().asComplexType(), parseContext);
         } else {
             processSimpleType(element.getType().asSimpleType(), parseContext);
             parseContext.currentClass.addElement(getJType(parseContext.currentClass.codeModel, element.getType().getName()), element.getName(), parseContext.minOccurs, parseContext.maxOccurs == -1, false);

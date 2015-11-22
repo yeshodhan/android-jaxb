@@ -1,5 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <Person xmlns="http://person.mickoo.com/">
    <FirstName>John</FirstName>
    <LastName>Doe</LastName>
-   <Is_Adult>true</Is_Adult>
+   <Adult>true</Adult>
+   <Addresses>
+      <Address>
+         <Line1>1 Main Street</Line1>
+         <Line2>Apt 12</Line2>
+         <City>San Jose</City>
+         <State>California</State>
+         <Country>United States</Country>
+      </Address>
+      <Address>
+         <Line1>2 Main Street</Line1>
+         <Line2>Apt 14</Line2>
+         <City>San Jose</City>
+         <State>California</State>
+         <Country>United States</Country>
+      </Address>
+   </Addresses>
 </Person>
