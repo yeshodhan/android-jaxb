@@ -15,41 +15,41 @@ Library works to convert simple XSD files without inheritance and multiple names
  * Run as below:
  
 ```bash
-➜  lib git:(master) ✗ java -jar android-jaxb-1.0.jar
+➜  target git:(master) ✗ java -jar android-jaxb-1.0.jar --help
 usage: android-jaxb
 ---------------------------------------------------------------------
- -b,--bindings            bindings JSON file
+ -b,--bindings <arg>      bindings JSON file
  -d,--destination <arg>   destination directory for generated classes
  -h,--help                Help on usage
  -p,--package <arg>       package name for generated classes. Eg.:
                           com.example.app
  -v,--version             Version
- -x,--xsd <arg>           XML Schema file
 ---------------------------------------------------------------------
-➜  lib git:(master) ✗ java -jar android-jaxb-1.0.jar -b /Users/yeshodhan/projects/xsd-to-simplexml/src/test/resources/bindings.json -d /Users/yeshodhan/projects/xsd-to-simplexml/src/test/java -p com.mickoo.person -x /Users/yeshodhan/projects/xsd-to-simplexml/src/test/resources/person.xsd
-2015-11-22 14:25:28 INFO  CodeGenerator:40 - Code Generator Initialized. Destination Directory: /Users/yeshodhan/projects/xsd-to-simplexml/src/test/java
-[Element /Person    Min Occurs: null, Max Occurs: null ] of type [Person]2015-11-22 14:25:28 INFO  SchemaParser:207 - [Start of sequence Min Occurs: 1, Max Occurs: 1 ]
-	[Element /Person/FirstName    Min Occurs: 0, Max Occurs: 1 ] of type [string]2015-11-22 14:25:28 INFO  SchemaParser:232 -
-	[Element /Person/LastName    Min Occurs: 0, Max Occurs: 1 ] of type [string]2015-11-22 14:25:28 INFO  SchemaParser:232 -
-	[Element /Person/Adult    Min Occurs: 0, Max Occurs: 1 ] of type [boolean]2015-11-22 14:25:28 INFO  SchemaParser:232 -
-	[Element /Person/Addresses    Min Occurs: 0, Max Occurs: 1 ] of type [Addresses]2015-11-22 14:25:28 INFO  SchemaParser:207 - 	[Start of sequence Min Occurs: 1, Max Occurs: 1 ]
-		[Element /Person/Addresses/Address    Min Occurs: 0, Max Occurs: -1 ] of type [Address]2015-11-22 14:25:28 INFO  SchemaParser:207 - 		[Start of sequence Min Occurs: 1, Max Occurs: 1 ]
-			[Element /Person/Addresses/Address/Line1    Min Occurs: 0, Max Occurs: 1 ] of type [string]2015-11-22 14:25:28 INFO  SchemaParser:232 -
-			[Element /Person/Addresses/Address/Line2    Min Occurs: 0, Max Occurs: 1 ] of type [string]2015-11-22 14:25:28 INFO  SchemaParser:232 -
-			[Element /Person/Addresses/Address/City    Min Occurs: 0, Max Occurs: 1 ] of type [string]2015-11-22 14:25:28 INFO  SchemaParser:232 -
-			[Element /Person/Addresses/Address/State    Min Occurs: 0, Max Occurs: 1 ] of type [string]2015-11-22 14:25:28 INFO  SchemaParser:232 -
-			[Element /Person/Addresses/Address/Country    Min Occurs: 1, Max Occurs: 1 ] of type [string]2015-11-22 14:25:28 INFO  SchemaParser:232 -
-			[Element /Person/Addresses/Address/PostalCode    Min Occurs: 0, Max Occurs: 1 ] of type [string]2015-11-22 14:25:28 INFO  SchemaParser:232 -
-2015-11-22 14:25:28 INFO  SchemaParser:215 - 		[End of sequence]
-2015-11-22 14:25:28 INFO  SchemaParser:215 - 	[End of sequence]
-	[Element /Person/Gender    Min Occurs: 0, Max Occurs: 1 ] of type [Gender]2015-11-22 14:25:28 INFO  SchemaParser:232 - [Values = MALE, FEMALE, NOT_SPECIFIED]
-	[Element /Person/Favorite_Fruits    Min Occurs: 0, Max Occurs: 3 ] of type [Fruits]2015-11-22 14:25:28 INFO  SchemaParser:232 - [Values = Apple, Banana, Mango, Orange, Grapes, Watermelon, Peach, Apricot, Grapefruit]
-	[Element /Person/SomeThing_really_whacky-by-the-user    Min Occurs: 0, Max Occurs: 1 ] of type [string]2015-11-22 14:25:28 INFO  SchemaParser:232 -
-2015-11-22 14:25:28 INFO  SchemaParser:215 - [End of sequence]
+➜  target git:(master) ✗ java -jar android-jaxb-1.0.jar -b /Users/yeshodhan/projects/xsd-to-simplexml/src/test/resources/bindings.json -d /Users/yeshodhan/projects/xsd-to-simplexml/src/test/java -p com.mickoo.person /Users/yeshodhan/projects/xsd-to-simplexml/src/test/resources/person.xsd
+2015-11-22 15:00:36 INFO  Bindings:36 - Reading bindings ...
+2015-11-22 15:00:36 INFO  CodeGenerator:39 - Code Generator Initialized. Destination Directory: /Users/yeshodhan/projects/xsd-to-simplexml/src/test/java
+[Element /Person    Min Occurs: null, Max Occurs: null ] of type [Person]2015-11-22 15:00:36 INFO  SchemaParser:205 - [Start of sequence Min Occurs: 1, Max Occurs: 1 ]
+	[Element /Person/FirstName    Min Occurs: 0, Max Occurs: 1 ] of type [string]2015-11-22 15:00:36 INFO  SchemaParser:230 -
+	[Element /Person/LastName    Min Occurs: 0, Max Occurs: 1 ] of type [string]2015-11-22 15:00:36 INFO  SchemaParser:230 -
+	[Element /Person/Adult    Min Occurs: 0, Max Occurs: 1 ] of type [boolean]2015-11-22 15:00:36 INFO  SchemaParser:230 -
+	[Element /Person/Addresses    Min Occurs: 0, Max Occurs: 1 ] of type [Addresses]2015-11-22 15:00:36 INFO  SchemaParser:205 - 	[Start of sequence Min Occurs: 1, Max Occurs: 1 ]
+		[Element /Person/Addresses/Address    Min Occurs: 0, Max Occurs: -1 ] of type [Address]2015-11-22 15:00:36 INFO  SchemaParser:205 - 		[Start of sequence Min Occurs: 1, Max Occurs: 1 ]
+			[Element /Person/Addresses/Address/Line1    Min Occurs: 0, Max Occurs: 1 ] of type [string]2015-11-22 15:00:36 INFO  SchemaParser:230 -
+			[Element /Person/Addresses/Address/Line2    Min Occurs: 0, Max Occurs: 1 ] of type [string]2015-11-22 15:00:36 INFO  SchemaParser:230 -
+			[Element /Person/Addresses/Address/City    Min Occurs: 0, Max Occurs: 1 ] of type [string]2015-11-22 15:00:36 INFO  SchemaParser:230 -
+			[Element /Person/Addresses/Address/State    Min Occurs: 0, Max Occurs: 1 ] of type [string]2015-11-22 15:00:36 INFO  SchemaParser:230 -
+			[Element /Person/Addresses/Address/Country    Min Occurs: 1, Max Occurs: 1 ] of type [string]2015-11-22 15:00:36 INFO  SchemaParser:230 -
+			[Element /Person/Addresses/Address/PostalCode    Min Occurs: 0, Max Occurs: 1 ] of type [string]2015-11-22 15:00:36 INFO  SchemaParser:230 -
+2015-11-22 15:00:36 INFO  SchemaParser:213 - 		[End of sequence]
+2015-11-22 15:00:36 INFO  SchemaParser:213 - 	[End of sequence]
+	[Element /Person/Gender    Min Occurs: 0, Max Occurs: 1 ] of type [Gender]2015-11-22 15:00:37 INFO  SchemaParser:230 - [Values = MALE, FEMALE, NOT_SPECIFIED]
+	[Element /Person/Favorite_Fruits    Min Occurs: 0, Max Occurs: 3 ] of type [Fruits]2015-11-22 15:00:37 INFO  SchemaParser:230 - [Values = Apple, Banana, Mango, Orange, Grapes, Watermelon, Peach, Apricot, Grapefruit]
+	[Element /Person/SomeThing_really_whacky-by-the-user    Min Occurs: 0, Max Occurs: 1 ] of type [string]2015-11-22 15:00:37 INFO  SchemaParser:230 -
+2015-11-22 15:00:37 INFO  SchemaParser:213 - [End of sequence]
 com/mickoo/person/Address.java
 com/mickoo/person/Addresses.java
 com/mickoo/person/Fruits.java
-com/mickoo/person/Gender.java
+com/mickoo/person/GenderEnum.java
 com/mickoo/person/Person.java
 ``` 
 
