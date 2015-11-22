@@ -1,16 +1,17 @@
 
 package com.mickoo.person;
 
-import java.util.List;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Namespace;
 import org.simpleframework.xml.Root;
 
+import java.util.List;
+
 
 /**
  * Person<br>
- * Generated using: xsd-to-simplexml generator.<br>
+ * Generated using Android JAXB<br>
  * @link https://github.com/yeshodhan/android-jaxb
  * 
  */
@@ -27,7 +28,7 @@ public class Person {
     @Element(name = "Addresses", required = false)
     private Addresses addresses;
     @Element(name = "Gender", required = false)
-    private Gender gender;
+    private GenderEnum gender;
     @ElementList(name = "Favorite_Fruits", entry = "Favorite_Fruits", inline = true, required = false)
     private List<Fruits> favoriteFruits;
     @Element(name = "SomeThing_really_whacky-by-the-user", required = false)
@@ -68,11 +69,11 @@ public class Person {
         this.addresses = addresses;
     }
 
-    public Gender getGender() {
+    public GenderEnum getGender() {
         return gender;
     }
 
-    public void setGender(Gender gender) {
+    public void setGender(GenderEnum gender) {
         this.gender = gender;
     }
 

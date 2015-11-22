@@ -1,5 +1,6 @@
 package com.mickoo.xml.xsd2simplexml;
 
+import com.mickoo.xml.xsd2simplexml.bindings.*;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JType;
 import com.sun.xml.internal.bind.api.impl.NameConverter;
@@ -20,7 +21,7 @@ import java.util.Vector;
 /**
  * Schema Parser
  *
- * @author Yeshodhan Kulkarni (yeshodhan.kulkarni@tp-link.com)
+ * @author Yeshodhan Kulkarni (yeshodhan.kulkarni@gmail.com)
  * @version 1.0
  * @since 1.0
  */
@@ -32,8 +33,10 @@ public class SchemaParser {
     String destinationDir;
     String targetPackage;
     XSSchema schema;
+    Bindings bindings;
 
-    public SchemaParser(File file, String destinationDir, String targetPackage) throws Exception {
+
+    public SchemaParser(File file, String destinationDir, String targetPackage, File schemaBindings) throws Exception {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         Document doc = dBuilder.parse(file);
@@ -46,6 +49,11 @@ public class SchemaParser {
                 this.schema = schema;
                 break;
             }
+        }
+
+        bindings = new Bindings();
+        if (schemaBindings != null) {
+            bindings.readBindings(schemaBindings);
         }
 
         this.destinationDir = destinationDir;
@@ -88,6 +96,9 @@ public class SchemaParser {
             return " Min Occurs: " + minOccurs + ", Max Occurs: " + maxOccurs + " ";
         }
 
+        public boolean isUnbounded() {
+            return (maxOccurs == -1 || maxOccurs > 1);
+        }
     }
 
     public static class SimpleTypeRestriction {
@@ -181,7 +192,7 @@ public class SchemaParser {
         return simpleTypeRestriction;
     }
 
-    private void processParticle(XSParticle particle, ParseContext parseContext)  throws Exception{
+    private void processParticle(XSParticle particle, ParseContext parseContext) throws Exception {
         parseContext.minOccurs = particle.getMinOccurs().intValue();
         parseContext.maxOccurs = particle.getMaxOccurs().intValue();
         XSTerm term = particle.getTerm();
@@ -194,7 +205,7 @@ public class SchemaParser {
         }
     }
 
-    private void processGroup(XSModelGroup modelGroup, ParseContext parseContext)  throws Exception{
+    private void processGroup(XSModelGroup modelGroup, ParseContext parseContext) throws Exception {
         logger.info(parseContext.indent + "[Start of " + modelGroup.getCompositor() + parseContext.getOccurs() + "]");
         for (XSParticle particle : modelGroup.getChildren()) {
             ParseContext newParseContext = new ParseContext();
@@ -206,46 +217,96 @@ public class SchemaParser {
         logger.info(parseContext.indent + "[End of " + modelGroup.getCompositor() + "]");
     }
 
-    private void processGroupDecl(XSModelGroupDecl modelGroupDecl, ParseContext parseContext)  throws Exception{
+    private void processGroupDecl(XSModelGroupDecl modelGroupDecl, ParseContext parseContext) throws Exception {
         logger.info(parseContext.indent + "[Group " + modelGroupDecl.getName() + parseContext.getOccurs() + "]");
         processGroup(modelGroupDecl.getModelGroup(), parseContext);
     }
 
-    private void processComplexType(XSComplexType complexType, ParseContext parseContext)  throws Exception{
+    private void processComplexType(XSComplexType complexType, ParseContext parseContext) throws Exception {
         XSParticle particle = complexType.getContentType().asParticle();
         if (particle != null) {
             processParticle(particle, parseContext);
         }
     }
 
-    private SimpleTypeRestriction processSimpleType(XSSimpleType simpleType, ParseContext parseContext)  throws Exception {
+    private SimpleTypeRestriction processSimpleType(XSSimpleType simpleType, ParseContext parseContext) throws Exception {
         SimpleTypeRestriction restriction = getRestrictions(simpleType);
         logger.info(restriction.toString());
         return restriction;
     }
 
-    private void processElement(XSElementDecl element, ParseContext parseContext) throws Exception{
+    private void processElement(XSElementDecl element, ParseContext parseContext) throws Exception {
         parseContext.path += "/" + element.getName();
         System.out.print(parseContext.indent + "[Element " + parseContext.path + "   " + parseContext.getOccurs() + "] of type [" + element.getType().getName() + "]");
         if (element.getType().isComplexType()) {
+
             GeneratedClass parentClass = parseContext.currentClass;
-            if(parentClass != null) {
-                parseContext.currentClass = codeGenerator.createElement(element.getTargetNamespace(), element.getType().getName());
-                parentClass.addElement(parseContext.currentClass.codeModel.parseType(NameConverter.smart.toClassName(element.getType().getName())), element.getName(), parseContext.minOccurs, (parseContext.maxOccurs >1 || parseContext.maxOccurs == -1), false);
+
+            if (parentClass != null) {
+
+                parseContext.currentClass = codeGenerator.createElement(
+                        element.getTargetNamespace(),
+                        element.getType().getName()
+                );
+                parentClass.addElement(
+                        parseContext.currentClass.codeModel.parseType(
+                                NameConverter.smart.toClassName(element.getType().getName())
+                        ),
+                        element.getName(),
+                        parseContext.minOccurs,
+                        parseContext.isUnbounded(),
+                        false
+                );
+
             } else {
-                parseContext.currentClass = codeGenerator.createElement(element.getTargetNamespace(), element.getName());
+
+                parseContext.currentClass = codeGenerator.createElement(
+                        element.getTargetNamespace(),
+                        element.getName()
+                );
             }
             processComplexType(element.getType().asComplexType(), parseContext);
         } else {
+
             SimpleTypeRestriction restrictions = processSimpleType(element.getType().asSimpleType(), parseContext);
-            GeneratedClass enumClass = null;
-            if(restrictions != null && restrictions.enumeration != null) {
-                enumClass = codeGenerator.createEnum(element.getTargetNamespace(), element.getType().getName(), restrictions.enumeration);
-            }
-            if (enumClass == null) {
-                parseContext.currentClass.addElement(getJType(parseContext.currentClass.codeModel, element.getType().getName()), element.getName(), parseContext.minOccurs, (parseContext.maxOccurs >1 || parseContext.maxOccurs == -1), false);
+
+            if (restrictions.enumeration == null) {
+
+                //add simple element with primitive property to class
+
+                parseContext.currentClass.addElement(
+                        getJType(parseContext.currentClass.codeModel, element.getType().getName()),
+                        element.getName(),
+                        parseContext.minOccurs,
+                        parseContext.isUnbounded(),
+                        false
+                );
+
             } else {
-                parseContext.currentClass.addElement(enumClass.codeModel.parseType(NameConverter.smart.toClassName(element.getType().getName())), element.getName(), parseContext.minOccurs, (parseContext.maxOccurs >1 || parseContext.maxOccurs == -1), false);
+
+                //create enumeration
+
+                EnumBinding enumBinding = bindings.getEnumBinding(element.getType().getName());
+
+                GeneratedClass enumClass = codeGenerator.createEnum(
+                        element.getTargetNamespace(),
+                        element.getType().getName(),
+                        restrictions.enumeration,
+                        enumBinding
+                );
+
+                //add enumeration property to class
+
+                String className = NameConverter.smart.toClassName(element.getType().getName());
+                if(enumBinding != null && !Utils.isEmpty(enumBinding.getClassName())) className = enumBinding.getClassName();
+
+                parseContext.currentClass.addElement(
+                        enumClass.codeModel.parseType(className),
+                        element.getName(),
+                        parseContext.minOccurs,
+                        parseContext.isUnbounded(),
+                        false
+                );
             }
 
         }

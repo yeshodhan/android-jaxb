@@ -8,7 +8,7 @@ import org.simpleframework.xml.Root;
 
 /**
  * Address<br>
- * Generated using: xsd-to-simplexml generator.<br>
+ * Generated using Android JAXB<br>
  * @link https://github.com/yeshodhan/android-jaxb
  * 
  */

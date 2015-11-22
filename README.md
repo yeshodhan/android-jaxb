@@ -3,9 +3,15 @@
 
 Library works to convert simple XSD files without inheritance and multiple namespaces to SimpleXML annotated Java classes. This solves my current requirement.
 
+### Features
+
+ * Works well with Android
+ * Creates JAXB like Class, Property and Method names.
+ * Customize generated code using a JSON bindings file.
+
 ### Usage
 
-//TODO
+mvn install
 
 ### Example
 
@@ -70,8 +76,45 @@ Library works to convert simple XSD files without inheritance and multiple names
     </xsd:simpleType>
 
 </xsd:schema>
-
 ```
+#### Bindings JSON File
+
+```json
+{
+  "complexTypes": {
+  },
+  "enums": {
+    "Gender": {
+      "classname": "GenderEnum",
+      "attributes": [
+        {
+          "name": "id",
+          "type": "int"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        }
+      ],
+      "values": [
+        {
+          "key": "MALE",
+          "attributes": [0, "Men are from Mars"]
+        },
+        {
+          "key": "FEMALE",
+          "attributes": [1, "Women are from Venus"]
+        },
+        {
+          "key": "NOT_SPECIFIED",
+          "attributes": [2, "Can't say anything"]
+        }
+      ]
+    }
+  }
+}
+```
+
 #### Generated Java Classes
 
 ```java
@@ -87,7 +130,7 @@ import org.simpleframework.xml.Root;
 
 /**
  * Address<br>
- * Generated using: xsd-to-simplexml generator.<br>
+ * Generated using Android JAXB<br>
  * @link https://github.com/yeshodhan/android-jaxb
  * 
  */
@@ -171,7 +214,7 @@ import org.simpleframework.xml.Root;
 
 /**
  * Addresses<br>
- * Generated using: xsd-to-simplexml generator.<br>
+ * Generated using Android JAXB<br>
  * @link https://github.com/yeshodhan/android-jaxb
  * 
  */
@@ -223,26 +266,42 @@ import org.simpleframework.xml.Root;
 
 @Root(name = "Gender")
 @Namespace(reference = "http://person.mickoo.com/")
-public enum Gender {
+public enum GenderEnum {
 
-    MALE,
-    FEMALE,
-    NOT_SPECIFIED;
+    MALE(0, "Men are from Mars"),
+    FEMALE(1, "Women are from Venus"),
+    NOT_SPECIFIED(2, "Can't say anything");
+    private final Integer id;
+    private final String description;
+
+    private GenderEnum(Integer id, String description) {
+        this.id = id;
+        this.description = description;
+    }
+
+    public Integer id() {
+        return id;
+    }
+
+    public String description() {
+        return description;
+    }
 
 }
 
 package com.mickoo.person;
 
-import java.util.List;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Namespace;
 import org.simpleframework.xml.Root;
 
+import java.util.List;
+
 
 /**
  * Person<br>
- * Generated using: xsd-to-simplexml generator.<br>
+ * Generated using Android JAXB<br>
  * @link https://github.com/yeshodhan/android-jaxb
  * 
  */
@@ -259,7 +318,7 @@ public class Person {
     @Element(name = "Addresses", required = false)
     private Addresses addresses;
     @Element(name = "Gender", required = false)
-    private Gender gender;
+    private GenderEnum gender;
     @ElementList(name = "Favorite_Fruits", entry = "Favorite_Fruits", inline = true, required = false)
     private List<Fruits> favoriteFruits;
     @Element(name = "SomeThing_really_whacky-by-the-user", required = false)
@@ -300,11 +359,11 @@ public class Person {
         this.addresses = addresses;
     }
 
-    public Gender getGender() {
+    public GenderEnum getGender() {
         return gender;
     }
 
-    public void setGender(Gender gender) {
+    public void setGender(GenderEnum gender) {
         this.gender = gender;
     }
 
@@ -328,6 +387,8 @@ public class Person {
 
 
 
+
+
 ```
 
 #### Serialized XML
@@ -338,11 +399,12 @@ public class Person {
     public void serialize() throws Exception {
         Serializer serializer = new Persister();
         Person person = new Person();
+
         person.setFirstName("John");
         person.setLastName("Doe");
         person.setAdult(true);
 
-        person.setGender(Gender.MALE);
+        person.setGender(GenderEnum.MALE);
 
         List<Fruits> fruits = new ArrayList<Fruits>();
         fruits.add(Fruits.Apple);

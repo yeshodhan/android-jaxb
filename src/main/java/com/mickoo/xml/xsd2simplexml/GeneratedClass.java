@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * com.mickoo.xml.xsd2simplexml
  *
- * @author Yeshodhan Kulkarni (yeshodhan.kulkarni@tp-link.com)
+ * @author Yeshodhan Kulkarni (yeshodhan.kulkarni@gmail.com)
  * @version 1.0
  * @since 1.0
  */

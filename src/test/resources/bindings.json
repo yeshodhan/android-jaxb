@@ -1,0 +1,33 @@
+{
+  "complexTypes": {
+  },
+  "enums": {
+    "Gender": {
+      "classname": "GenderEnum",
+      "attributes": [
+        {
+          "name": "id",
+          "type": "int"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        }
+      ],
+      "values": [
+        {
+          "key": "MALE",
+          "attributes": [0, "Men are from Mars"]
+        },
+        {
+          "key": "FEMALE",
+          "attributes": [1, "Women are from Venus"]
+        },
+        {
+          "key": "NOT_SPECIFIED",
+          "attributes": [2, "Can't say anything"]
+        }
+      ]
+    }
+  }
+}

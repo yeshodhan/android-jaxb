@@ -9,7 +9,7 @@ import org.simpleframework.xml.Root;
 
 /**
  * Addresses<br>
- * Generated using: xsd-to-simplexml generator.<br>
+ * Generated using Android JAXB<br>
  * @link https://github.com/yeshodhan/android-jaxb
  * 
  */

@@ -1,5 +1,8 @@
 package com.mickoo.xml.xsd2simplexml;
 
+import com.mickoo.xml.xsd2simplexml.bindings.EnumAttribute;
+import com.mickoo.xml.xsd2simplexml.bindings.EnumAttributeValue;
+import com.mickoo.xml.xsd2simplexml.bindings.EnumBinding;
 import com.sun.codemodel.*;
 import com.sun.xml.internal.bind.api.impl.NameConverter;
 import org.apache.log4j.Logger;
@@ -8,6 +11,7 @@ import org.simpleframework.xml.Root;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +20,7 @@ import java.util.Map;
 /**
  * Code Generator
  *
- * @author Yeshodhan Kulkarni (yeshodhan.kulkarni@tp-link.com)
+ * @author Yeshodhan Kulkarni (yeshodhan.kulkarni@gmail.com)
  * @version 1.0
  * @since 1.0
  */
@@ -28,6 +32,7 @@ public class CodeGenerator {
     Map<String, GeneratedClass> generatedClasses = new HashMap<String, GeneratedClass>();
     String destinationDir;
     String targetPackage;
+    Map<String, String> bindingRedirects = new HashMap<String, String>();
 
     public CodeGenerator(String destinationDir, String targetPackage) {
         this.codeModel = new JCodeModel();
@@ -40,7 +45,7 @@ public class CodeGenerator {
         String className = NameConverter.smart.toClassName(name);
         String qualifiedClassName = targetPackage + "." + NameConverter.smart.toClassName(className);
         GeneratedClass generatedClass = generatedClasses.get(qualifiedClassName);
-        if(generatedClass != null) {
+        if (generatedClass != null) {
             return generatedClass;
         }
         JDefinedClass jDefinedClass = codeModel._class(qualifiedClassName);
@@ -52,7 +57,7 @@ public class CodeGenerator {
         JDocComment jDocComment = jDefinedClass.javadoc();
         jDocComment.add(className);
         jDocComment.add("<br>\n");
-        jDocComment.add("Generated using: xsd-to-simplexml generator.");
+        jDocComment.add("Generated using Android JAXB");
         jDocComment.add("<br>\n");
         jDocComment.add("@link https://github.com/yeshodhan/android-jaxb");
 
@@ -60,11 +65,17 @@ public class CodeGenerator {
         return generatedClass;
     }
 
-    public GeneratedClass createEnum(String namespace, String name, List<String> values) throws JClassAlreadyExistsException {
+    public GeneratedClass createEnum(String namespace, String name, List<String> values, EnumBinding enumBinding) throws JClassAlreadyExistsException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+
         String className = NameConverter.smart.toClassName(name);
-        String qualifiedClassName = targetPackage + "." + NameConverter.smart.toClassName(className);
+        if (enumBinding != null && !Utils.isEmpty(enumBinding.getClassName())) {
+            bindingRedirects.put(targetPackage + "." + className, targetPackage + "." + enumBinding.getClassName());
+            className = enumBinding.getClassName();
+        }
+
+        String qualifiedClassName = targetPackage + "." + className;
         GeneratedClass generatedClass = generatedClasses.get(qualifiedClassName);
-        if(generatedClass != null) {
+        if (generatedClass != null) {
             return generatedClass;
         }
 
@@ -72,30 +83,81 @@ public class CodeGenerator {
         generatedClass = new GeneratedClass(codeModel, enumClass);
         enumClass.annotate(Root.class).param("name", name);
         enumClass.annotate(Namespace.class).param("reference", namespace);
-        for(String enumConstant : values) {
-            JEnumConstant enumConst = enumClass.enumConstant(enumConstant);
+
+
+        if (enumBinding == null) {
+
+            // create enumeration without any customization
+
+            for (String enumConstant : values) {
+                enumClass.enumConstant(enumConstant);
+            }
+        } else {
+
+            // create enumeration with the bindings provided
+
+            JMethod enumConstructor = enumClass.constructor(JMod.PRIVATE);
+
+            for (EnumAttribute enumAttribute : enumBinding.getAttributes()) {
+
+                //constructor
+                enumConstructor.param(enumAttribute.getTypeClz(), enumAttribute.getName());
+                enumConstructor.body().assign(JExpr._this().ref(enumAttribute.getName()), JExpr.ref(enumAttribute.getName()));
+
+                //property
+                JFieldVar attributeVar = enumClass.field(JMod.PRIVATE | JMod.FINAL, enumAttribute.getTypeClz(), enumAttribute.getName());
+
+                //getter
+                JMethod attributeMethod = enumClass.method(JMod.PUBLIC, enumAttribute.getTypeClz(), enumAttribute.getName());
+                attributeMethod.body()._return(attributeVar);
+            }
+
+            for (EnumAttributeValue attributeValue : enumBinding.getAttributeValues()) {
+
+                JEnumConstant enumConstant = enumClass.enumConstant(attributeValue.getKey());
+                List<Object> attributeValues = attributeValue.getAttributes();
+                int index = 0;
+                for (Object attributeVal : attributeValues) {
+                    EnumAttribute enumAttribute = enumBinding.getAttributes().get(index);
+
+                    //todo - need to find a better way.
+                    if (enumAttribute.getTypeClz() == String.class) {
+
+                        enumConstant.arg(JExpr.lit((String) attributeVal));
+
+                    } else if (enumAttribute.getTypeClz() == Integer.class) {
+
+                        enumConstant.arg(JExpr.lit((Integer) attributeVal));
+
+                    } else if (enumAttribute.getTypeClz() == Float.class) {
+
+                        enumConstant.arg(JExpr.lit((Float) attributeVal));
+
+                    } else if (enumAttribute.getTypeClz() == Double.class) {
+
+                        enumConstant.arg(JExpr.lit((Double) attributeVal));
+
+                    } else if (enumAttribute.getTypeClz() == Short.class) {
+
+                        enumConstant.arg(JExpr.lit((Short) attributeVal));
+
+                    } else if (enumAttribute.getTypeClz() == Boolean.class) {
+
+                        enumConstant.arg(JExpr.lit((Boolean) attributeVal));
+
+                    } else if (enumAttribute.getTypeClz() == Character.class) {
+
+                        enumConstant.arg(JExpr.lit((Character) attributeVal));
+
+                    }
+
+                    index++;
+                }
+            }
         }
+
         generatedClasses.put(qualifiedClassName, generatedClass);
         return generatedClass;
-
-
-//        JFieldVar columnField = enumClass.field(JMod.PRIVATE|JMod.FINAL, String.class, "column");
-//        JFieldVar filterableField = enumClass.field(JMod.PRIVATE | JMod.FINAL, codeModel.BOOLEAN, "filterable");
-//
-//        JMethod enumConstructor = enumClass.constructor(JMod.PRIVATE);
-//        enumConstructor.param(String.class, "column");
-//        enumConstructor.param(codeModel.BOOLEAN, "filterable");
-//        enumConstructor.body().assign(JExpr._this().ref ("column"), JExpr.ref("column"));
-//        enumConstructor.body().assign(JExpr._this().ref ("filterable"), JExpr.ref("filterable"));
-//
-//        JMethod getterColumnMethod = enumClass.method(JMod.PUBLIC, String.class, "getColumn");
-//        getterColumnMethod.body()._return(columnField);
-//        JMethod getterFilterMethod = enumClass.method(JMod.PUBLIC, codeModel.BOOLEAN, "isFilterable");
-//        getterFilterMethod.body()._return(filterableField);
-//
-//        JEnumConstant enumConst = enumClass.enumConstant("FOO_BAR");
-//        enumConst.arg(JExpr.lit("fooBar"));
-//        enumConst.arg(JExpr.lit(true));
 
     }
 

@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * com.mickoo.xml.xml2simplexml
  *
- * @author Yeshodhan Kulkarni (yeshodhan.kulkarni@tp-link.com)
+ * @author Yeshodhan Kulkarni (yeshodhan.kulkarni@gmail.com)
  * @version 1.0
  * @since 1.0
  */
@@ -25,11 +25,12 @@ public class MainTest {
     public void serialize() throws Exception {
         Serializer serializer = new Persister();
         Person person = new Person();
+
         person.setFirstName("John");
         person.setLastName("Doe");
         person.setAdult(true);
 
-        person.setGender(Gender.MALE);
+        person.setGender(GenderEnum.MALE);
 
         List<Fruits> fruits = new ArrayList<Fruits>();
         fruits.add(Fruits.Apple);
@@ -65,9 +66,10 @@ public class MainTest {
     }
 
     public void parser() throws Exception {
-        String schemaFile = "person.xsd";
-        File file = new File(TEST_RESOURCES_DIR + "/" + schemaFile);
-        SchemaParser schemaParser = new SchemaParser(file, DESTINATION_DIR, "com.mickoo.person");
+        String schemaFileName = "person.xsd";
+        File schemaFile = new File(TEST_RESOURCES_DIR + "/" + schemaFileName);
+        File bindingsFile = new File(TEST_RESOURCES_DIR + "/bindings.json" );
+        SchemaParser schemaParser = new SchemaParser(schemaFile, DESTINATION_DIR, "com.mickoo.person", bindingsFile);
 
 //        File file = new File("/Users/yeshodhan/projects/tpra/iot-java-sdk-git/rangeextender/src/main/java/com/tplinkra/rangeextender/re350k/xml/rangeextender-api.xsd");
 //        SchemaParser schemaParser = new SchemaParser(file, DESTINATION_DIR, "com.tplinkra.rangeextender.re350k.xml");
