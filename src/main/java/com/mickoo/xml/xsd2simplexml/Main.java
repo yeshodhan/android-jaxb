@@ -22,7 +22,7 @@ public class Main {
         Options options = new Options();
         options.addOption("d", "destination", true, "destination directory for generated classes");
         options.addOption("p", "package", true, "package name for generated classes. Eg.: com.example.app");
-        options.addOption("b", "bindings", true, "bindings JSON file");
+        options.addOption("b", "bindings", true, "(optional) bindings JSON file");
         options.addOption("h", "help", false, "Help on usage");
         options.addOption("v", "version", false, "Version");
 
