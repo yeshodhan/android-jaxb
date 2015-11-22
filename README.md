@@ -12,11 +12,12 @@ Library works to convert simple XSD files without inheritance and multiple names
 ### Usage
 
  * Download the Android JAXB executable jar file from : https://s3.amazonaws.com/yeshodhan/android-jaxb-1.0.jar
- * Run as below:
+ * Run > java -jar android-jaxb-1.0.jar <options> your-schema-file.xsd
+ * See sample usage below:
  
 ```bash
 ➜  target git:(master) ✗ java -jar android-jaxb-1.0.jar --help
-usage: android-jaxb
+usage: java -jar android-jaxb-1.0.jar <options> your-schema-file.xsd
 ---------------------------------------------------------------------
  -b,--bindings <arg>      bindings JSON file
  -d,--destination <arg>   destination directory for generated classes

@@ -14,10 +14,10 @@ import java.io.File;
 
 public class Main {
 
-    public static void main(String[] args) throws Exception {
+    private  static HelpFormatter formatter = new HelpFormatter();
+    private static  final String headerFooter = "---------------------------------------------------------------------";
 
-        HelpFormatter formatter = new HelpFormatter();
-        String headerFooter = "---------------------------------------------------------------------";
+    public static void main(String[] args) throws Exception {
 
         Options options = new Options();
         options.addOption("d", "destination", true, "destination directory for generated classes");
@@ -27,7 +27,7 @@ public class Main {
         options.addOption("v", "version", false, "Version");
 
         if(args == null) {
-            formatter.printHelp("android-jaxb", headerFooter, options, headerFooter);
+
             System.exit(1);
         }
 
@@ -36,7 +36,7 @@ public class Main {
 
 
         if(commandLine.hasOption("h")) {
-            formatter.printHelp("android-jaxb", headerFooter, options, headerFooter);
+            printUsage(options);
             System.exit(0);
         }
 
@@ -46,7 +46,7 @@ public class Main {
         }
 
         if(commandLine.getOptions().length == 0) {
-            formatter.printHelp("android-jaxb", headerFooter, options, headerFooter);
+            printUsage(options);
             System.exit(1);
         }
 
@@ -72,13 +72,17 @@ public class Main {
         }
 
         if (!xmlSchema.exists()) {
-            formatter.printHelp("android-jaxb", options);
+            printUsage(options);
             System.exit(1);
         }
 
         SchemaParser schemaParser = new SchemaParser(xmlSchema, destinationDir, packageName, bindingsFile);
         schemaParser.parse();
 
+    }
+
+    private static void printUsage(Options options) {
+        formatter.printHelp("java -jar android-jaxb-1.0.jar <options> your-schema-file.xsd", headerFooter, options, headerFooter);
     }
 
 }
