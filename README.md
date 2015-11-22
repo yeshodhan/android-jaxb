@@ -335,11 +335,21 @@ public class Person {
 ##### Sample Code to serialize XML from generated Java Classes
 
 ```java
+    public void serialize() throws Exception {
         Serializer serializer = new Persister();
         Person person = new Person();
         person.setFirstName("John");
         person.setLastName("Doe");
         person.setAdult(true);
+
+        person.setGender(Gender.MALE);
+
+        List<Fruits> fruits = new ArrayList<Fruits>();
+        fruits.add(Fruits.Apple);
+        fruits.add(Fruits.Mango);
+        person.setFavoriteFruits(fruits);
+
+        person.setSomeThingReallyWhackyByTheUser("Whacky shit!");
 
         Addresses addresses = new Addresses();
         person.setAddresses(addresses);
@@ -365,6 +375,7 @@ public class Person {
 
         File result = new File(TEST_RESOURCES_DIR+"/person.xml");
         serializer.write(person, result);
+    }
 ```
 ##### XML Output
 
