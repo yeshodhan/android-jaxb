@@ -8,7 +8,8 @@ Library works to convert simple XSD files without inheritance and multiple names
 //TODO
 
 ### Example
-XML Schema  
+
+#### XML Schema  
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -45,6 +46,7 @@ XML Schema
 </xsd:schema>
 
 ```
+#### Generated Java Classes
 
 ```java
 
