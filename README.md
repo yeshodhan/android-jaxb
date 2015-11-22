@@ -1,4 +1,4 @@
-# xsd-to-simplexml
+# XML Schema (XSD) to Simple XML Annotated Java (Android JAXB)
 ##Library to convert XML Schema to SimpleXML annotated Java classes for Android
 
 Library works to convert simple XSD files without inheritance and multiple namespaces to SimpleXML annotated Java classes. This solves my current requirement.
