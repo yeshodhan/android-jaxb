@@ -4,7 +4,6 @@ import com.mickoo.xml.xsd2simplexml.bindings.EnumAttribute;
 import com.mickoo.xml.xsd2simplexml.bindings.EnumAttributeValue;
 import com.mickoo.xml.xsd2simplexml.bindings.EnumBinding;
 import com.sun.codemodel.*;
-import com.sun.xml.internal.bind.api.impl.NameConverter;
 import org.apache.log4j.Logger;
 import org.simpleframework.xml.Namespace;
 import org.simpleframework.xml.Root;
@@ -30,11 +29,11 @@ public class CodeGenerator {
 
     JCodeModel codeModel;
     Map<String, GeneratedClass> generatedClasses = new HashMap<String, GeneratedClass>();
-    String destinationDir;
+    File destinationDir;
     String targetPackage;
     Map<String, String> bindingRedirects = new HashMap<String, String>();
 
-    public CodeGenerator(String destinationDir, String targetPackage) {
+    public CodeGenerator(File destinationDir, String targetPackage) {
         this.codeModel = new JCodeModel();
         this.destinationDir = destinationDir;
         this.targetPackage = targetPackage;
@@ -162,9 +161,7 @@ public class CodeGenerator {
     }
 
     public void writeClasses() throws IOException {
-        File destination = new File(destinationDir);
-        destination.mkdirs();
-        codeModel.build(destination);
+        codeModel.build(destinationDir);
     }
 
     public JType jtype(Class clz) {

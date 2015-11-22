@@ -1,7 +1,6 @@
 package com.mickoo.xml.xsd2simplexml;
 
 import com.sun.codemodel.*;
-import com.sun.xml.internal.bind.api.impl.NameConverter;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;

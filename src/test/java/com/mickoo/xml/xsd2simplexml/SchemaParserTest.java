@@ -1,7 +1,6 @@
-package com.mickoo.xml.xml2simplexml;
+package com.mickoo.xml.xsd2simplexml;
 
 import com.mickoo.person.*;
-import com.mickoo.xml.xsd2simplexml.SchemaParser;
 import org.junit.Test;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
@@ -17,9 +16,9 @@ import java.util.List;
  * @version 1.0
  * @since 1.0
  */
-public class MainTest {
+public class SchemaParserTest {
 
-    private final String DESTINATION_DIR = System.getProperty("user.dir") + "/target/generated";
+    private final String DESTINATION_DIR = System.getProperty("user.dir") + "/src/test/java";
     private final String TEST_RESOURCES_DIR = System.getProperty("user.dir") + "/src/test/resources";
 
     public void serialize() throws Exception {
@@ -67,19 +66,16 @@ public class MainTest {
 
     public void parser() throws Exception {
         String schemaFileName = "person.xsd";
+        File destinationDir = new File(DESTINATION_DIR);
         File schemaFile = new File(TEST_RESOURCES_DIR + "/" + schemaFileName);
         File bindingsFile = new File(TEST_RESOURCES_DIR + "/bindings.json" );
-        SchemaParser schemaParser = new SchemaParser(schemaFile, DESTINATION_DIR, "com.mickoo.person", bindingsFile);
-
-//        File file = new File("/Users/yeshodhan/projects/tpra/iot-java-sdk-git/rangeextender/src/main/java/com/tplinkra/rangeextender/re350k/xml/rangeextender-api.xsd");
-//        SchemaParser schemaParser = new SchemaParser(file, DESTINATION_DIR, "com.tplinkra.rangeextender.re350k.xml");
-
+        SchemaParser schemaParser = new SchemaParser(schemaFile, destinationDir, "com.mickoo.person", bindingsFile);
         schemaParser.parse();
     }
 
     @Test
     public void test() throws Exception {
-//        parser();
+        parser();
         serialize();
     }
 

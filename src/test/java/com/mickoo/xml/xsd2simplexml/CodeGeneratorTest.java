@@ -1,11 +1,10 @@
-package com.mickoo.xml.xml2simplexml;
+package com.mickoo.xml.xsd2simplexml;
 
-import com.mickoo.xml.xsd2simplexml.CodeGenerator;
-import com.mickoo.xml.xsd2simplexml.GeneratedClass;
 import com.sun.codemodel.JClassAlreadyExistsException;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -21,7 +20,7 @@ public class CodeGeneratorTest {
     Logger logger = Logger.getLogger(CodeGeneratorTest.class);
 
     String DESTINATION_DIR = System.getProperty("user.dir") + "/src/test/java";
-    CodeGenerator codeGenerator = new CodeGenerator(DESTINATION_DIR, "com.mickoo.person");
+    CodeGenerator codeGenerator = new CodeGenerator(new File(DESTINATION_DIR), "com.mickoo.person");
 
     @Test
     public void createClass() throws IOException, JClassAlreadyExistsException {

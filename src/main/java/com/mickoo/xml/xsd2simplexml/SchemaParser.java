@@ -1,13 +1,11 @@
 package com.mickoo.xml.xsd2simplexml;
 
-import com.mickoo.xml.xsd2simplexml.bindings.*;
+import com.mickoo.xml.xsd2simplexml.bindings.Bindings;
+import com.mickoo.xml.xsd2simplexml.bindings.EnumBinding;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JType;
-import com.sun.xml.internal.bind.api.impl.NameConverter;
-import com.sun.xml.internal.xsom.*;
-import com.sun.xml.internal.xsom.parser.JAXPParser;
-import com.sun.xml.internal.xsom.parser.XMLParser;
-import com.sun.xml.internal.xsom.parser.XSOMParser;
+import com.sun.xml.xsom.*;
+import com.sun.xml.xsom.parser.*;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 
@@ -27,23 +25,24 @@ import java.util.Vector;
  */
 public class SchemaParser {
 
-    Logger logger = Logger.getLogger(SchemaParser.class);
+    private static final Logger logger = Logger.getLogger(SchemaParser.class);
 
-    CodeGenerator codeGenerator;
-    String destinationDir;
-    String targetPackage;
-    XSSchema schema;
-    Bindings bindings;
+    private CodeGenerator codeGenerator;
+    private String targetPackage;
+    private XSSchema schema;
+    private Bindings bindings;
 
 
-    public SchemaParser(File file, String destinationDir, String targetPackage, File schemaBindings) throws Exception {
+    public SchemaParser(File xmlSchema, File destinationDir, String targetPackage, File schemaBindings) throws Exception {
+
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-        Document doc = dBuilder.parse(file);
+        Document doc = dBuilder.parse(xmlSchema);
         doc.getDocumentElement().normalize();
         XMLParser xmlParser = new JAXPParser();
         XSOMParser parser = new XSOMParser(xmlParser);
-        parser.parse(file);
+        parser.parse(xmlSchema);
+
         for (XSSchema schema : parser.getResult().getSchemas()) {
             if (schema.getElementDecls().size() > 0) {
                 this.schema = schema;
@@ -56,7 +55,6 @@ public class SchemaParser {
             bindings.readBindings(schemaBindings);
         }
 
-        this.destinationDir = destinationDir;
         this.targetPackage = targetPackage;
         this.codeGenerator = new CodeGenerator(destinationDir, targetPackage);
     }
@@ -69,7 +67,7 @@ public class SchemaParser {
         codeGenerator.writeClasses();
     }
 
-    public JType getJType(JCodeModel codeModel, String type) {
+    protected JType getJType(JCodeModel codeModel, String type) {
         if ("string".equals(type)) {
             return codeModel._ref(String.class);
         } else if ("int".equals(type) || "integer".equals(type) || "byte".equals(type) || "negativeInteger".equals(type) || "nonNegativeInteger".equals(type) || "nonPositiveInteger".equals(type) || "positiveInteger".equals(type) || "short".equals(type) || "unsignedInt".equals(type) || "unsignedShort".equals(type) || "byte".equals("unsignedByte")) {
@@ -84,7 +82,7 @@ public class SchemaParser {
         return null;
     }
 
-    public static class ParseContext {
+    static class ParseContext {
         GeneratedClass currentClass;
         Integer minOccurs;
         Integer maxOccurs;
@@ -101,7 +99,7 @@ public class SchemaParser {
         }
     }
 
-    public static class SimpleTypeRestriction {
+    static class SimpleTypeRestriction {
         public List<String> enumeration = null;
         public String maxValue = null;
         public String minValue = null;
@@ -141,7 +139,7 @@ public class SchemaParser {
         }
     }
 
-    private SimpleTypeRestriction getRestrictions(XSSimpleType xsSimpleType) {
+    protected  SimpleTypeRestriction getRestrictions(XSSimpleType xsSimpleType) {
         SimpleTypeRestriction simpleTypeRestriction = null;
         XSRestrictionSimpleType restriction = xsSimpleType.asRestriction();
         if (restriction != null) {
@@ -192,7 +190,7 @@ public class SchemaParser {
         return simpleTypeRestriction;
     }
 
-    private void processParticle(XSParticle particle, ParseContext parseContext) throws Exception {
+    protected void processParticle(XSParticle particle, ParseContext parseContext) throws Exception {
         parseContext.minOccurs = particle.getMinOccurs().intValue();
         parseContext.maxOccurs = particle.getMaxOccurs().intValue();
         XSTerm term = particle.getTerm();
@@ -205,7 +203,7 @@ public class SchemaParser {
         }
     }
 
-    private void processGroup(XSModelGroup modelGroup, ParseContext parseContext) throws Exception {
+    protected void processGroup(XSModelGroup modelGroup, ParseContext parseContext) throws Exception {
         logger.info(parseContext.indent + "[Start of " + modelGroup.getCompositor() + parseContext.getOccurs() + "]");
         for (XSParticle particle : modelGroup.getChildren()) {
             ParseContext newParseContext = new ParseContext();
@@ -217,25 +215,25 @@ public class SchemaParser {
         logger.info(parseContext.indent + "[End of " + modelGroup.getCompositor() + "]");
     }
 
-    private void processGroupDecl(XSModelGroupDecl modelGroupDecl, ParseContext parseContext) throws Exception {
+    protected void processGroupDecl(XSModelGroupDecl modelGroupDecl, ParseContext parseContext) throws Exception {
         logger.info(parseContext.indent + "[Group " + modelGroupDecl.getName() + parseContext.getOccurs() + "]");
         processGroup(modelGroupDecl.getModelGroup(), parseContext);
     }
 
-    private void processComplexType(XSComplexType complexType, ParseContext parseContext) throws Exception {
+    protected void processComplexType(XSComplexType complexType, ParseContext parseContext) throws Exception {
         XSParticle particle = complexType.getContentType().asParticle();
         if (particle != null) {
             processParticle(particle, parseContext);
         }
     }
 
-    private SimpleTypeRestriction processSimpleType(XSSimpleType simpleType, ParseContext parseContext) throws Exception {
+    protected SimpleTypeRestriction processSimpleType(XSSimpleType simpleType, ParseContext parseContext) throws Exception {
         SimpleTypeRestriction restriction = getRestrictions(simpleType);
         logger.info(restriction.toString());
         return restriction;
     }
 
-    private void processElement(XSElementDecl element, ParseContext parseContext) throws Exception {
+    protected void processElement(XSElementDecl element, ParseContext parseContext) throws Exception {
         parseContext.path += "/" + element.getName();
         System.out.print(parseContext.indent + "[Element " + parseContext.path + "   " + parseContext.getOccurs() + "] of type [" + element.getType().getName() + "]");
         if (element.getType().isComplexType()) {
