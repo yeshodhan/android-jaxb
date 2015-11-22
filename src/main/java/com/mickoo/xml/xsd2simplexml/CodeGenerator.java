@@ -31,7 +31,6 @@ public class CodeGenerator {
     Map<String, GeneratedClass> generatedClasses = new HashMap<String, GeneratedClass>();
     File destinationDir;
     String targetPackage;
-    Map<String, String> bindingRedirects = new HashMap<String, String>();
 
     public CodeGenerator(File destinationDir, String targetPackage) {
         this.codeModel = new JCodeModel();
@@ -68,7 +67,6 @@ public class CodeGenerator {
 
         String className = NameConverter.smart.toClassName(name);
         if (enumBinding != null && !Utils.isEmpty(enumBinding.getClassName())) {
-            bindingRedirects.put(targetPackage + "." + className, targetPackage + "." + enumBinding.getClassName());
             className = enumBinding.getClassName();
         }
 

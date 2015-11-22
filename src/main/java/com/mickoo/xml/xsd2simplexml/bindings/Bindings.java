@@ -33,6 +33,8 @@ public class Bindings {
             return;
         }
 
+        logger.info("Reading bindings ...");
+
         String bindings = FileUtils.readFileToString(bindingFile);
         JSONObject j_bindings = new JSONObject(bindings);
         JSONObject j_enums = j_bindings.optJSONObject("enums");

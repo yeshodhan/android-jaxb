@@ -1,5 +1,6 @@
 package com.mickoo.xml.xsd2simplexml;
 
+
 import com.mickoo.person.*;
 import org.junit.Test;
 import org.simpleframework.xml.Serializer;
@@ -8,6 +9,7 @@ import org.simpleframework.xml.core.Persister;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * com.mickoo.xml.xml2simplexml
@@ -76,7 +78,7 @@ public class SchemaParserTest {
     @Test
     public void test() throws Exception {
         parser();
-        serialize();
+//        serialize();
     }
 
 }

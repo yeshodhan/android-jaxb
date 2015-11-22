@@ -11,7 +11,7 @@ Library works to convert simple XSD files without inheritance and multiple names
 
 ### Usage
 
- * Download the Android JAXB executable jar file from : TODO
+ * Download the Android JAXB executable jar file from : https://s3.amazonaws.com/yeshodhan/android-jaxb-1.0.jar
  * Run as below:
  
 ```bash

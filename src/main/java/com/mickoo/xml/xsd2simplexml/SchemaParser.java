@@ -28,7 +28,6 @@ public class SchemaParser {
     private static final Logger logger = Logger.getLogger(SchemaParser.class);
 
     private CodeGenerator codeGenerator;
-    private String targetPackage;
     private XSSchema schema;
     private Bindings bindings;
 
@@ -55,7 +54,6 @@ public class SchemaParser {
             bindings.readBindings(schemaBindings);
         }
 
-        this.targetPackage = targetPackage;
         this.codeGenerator = new CodeGenerator(destinationDir, targetPackage);
     }
 

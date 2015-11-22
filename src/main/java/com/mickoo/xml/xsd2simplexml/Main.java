@@ -16,19 +16,24 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
+        HelpFormatter formatter = new HelpFormatter();
+        String headerFooter = "---------------------------------------------------------------------";
+
         Options options = new Options();
-        options.addOption("x", "xsd", true, "XML Schema file");
         options.addOption("d", "destination", true, "destination directory for generated classes");
         options.addOption("p", "package", true, "package name for generated classes. Eg.: com.example.app");
-        options.addOption("b", "bindings", false, "bindings JSON file");
+        options.addOption("b", "bindings", true, "bindings JSON file");
         options.addOption("h", "help", false, "Help on usage");
         options.addOption("v", "version", false, "Version");
+
+        if(args == null) {
+            formatter.printHelp("android-jaxb", headerFooter, options, headerFooter);
+            System.exit(1);
+        }
 
         CommandLineParser parser = new DefaultParser();
         CommandLine commandLine = parser.parse(options, args);
 
-        HelpFormatter formatter = new HelpFormatter();
-        String headerFooter = "---------------------------------------------------------------------";
 
         if(commandLine.hasOption("h")) {
             formatter.printHelp("android-jaxb", headerFooter, options, headerFooter);
@@ -40,15 +45,16 @@ public class Main {
             System.exit(0);
         }
 
+        if(commandLine.getOptions().length == 0) {
+            formatter.printHelp("android-jaxb", headerFooter, options, headerFooter);
+            System.exit(1);
+        }
+
         String destinationDirPath = commandLine.getOptionValue("d");
         String packageName = commandLine.getOptionValue("p");
         String bindingsFilePath = commandLine.getOptionValue("b");
         String xmlSchemaPath = commandLine.getOptionValue("xsd");
-
-        if(Utils.isEmpty(destinationDirPath) || Utils.isEmpty(packageName) || Utils.isEmpty(xmlSchemaPath)) {
-            formatter.printHelp("android-jaxb", headerFooter, options, headerFooter);
-            System.exit(1);
-        }
+        if(Utils.isEmpty(xmlSchemaPath)) xmlSchemaPath = commandLine.getArgs()[0];
 
         File destinationDir = new File(destinationDirPath);
         if (!destinationDir.exists()) {
