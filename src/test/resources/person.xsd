@@ -4,11 +4,12 @@
 
     <xsd:element name="Person" type="Person"/>
 
-
     <xsd:complexType name="Person">
         <xsd:sequence>
-            <xsd:element name="firstName" type="xsd:string" minOccurs="0" />
-            <xsd:element name="lastName" type="xsd:string" minOccurs="0" />
+            <xsd:element name="FirstName" type="xsd:string" minOccurs="0" />
+            <xsd:element name="LastName" type="xsd:string" minOccurs="0" />
+            <xsd:element name="Is_Adult" type="xsd:boolean" minOccurs="0" />
+            <xsd:element name="Country_Of_Birth" type="xsd:string" minOccurs="0" />
         </xsd:sequence>
     </xsd:complexType>
 

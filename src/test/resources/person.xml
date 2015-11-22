@@ -1,0 +1,5 @@
+<Person xmlns="http://person.mickoo.com/">
+   <FirstName>John</FirstName>
+   <LastName>Doe</LastName>
+   <Is_Adult>true</Is_Adult>
+</Person>

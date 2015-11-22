@@ -10,4 +10,6 @@ package com.mickoo.xml.xsd2simplexml;
 
 public class Main {
 
+
+
 }
