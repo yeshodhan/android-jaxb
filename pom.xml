@@ -20,11 +20,6 @@
             <version>2.6</version>
         </dependency>
         <dependency>
-            <groupId>org.ow2.easywsdl</groupId>
-            <artifactId>easy-wsdl</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.4</version>

@@ -1,9 +1,13 @@
 package com.mickoo.xml.xsd2simplexml;
 
 import com.sun.codemodel.*;
-import com.sun.xml.bind.api.impl.NameConverter;
+import com.sun.xml.internal.bind.api.impl.NameConverter;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * com.mickoo.xml.xsd2simplexml
@@ -17,38 +21,69 @@ public class GeneratedClass {
     JCodeModel codeModel;
     JDefinedClass generatedClass;
 
+    Set<String> properties = new HashSet<String>();
+
     public GeneratedClass(JCodeModel codeModel, JDefinedClass generatedClass) {
         this.codeModel = codeModel;
         this.generatedClass = generatedClass;
     }
 
-    public void addElement(int modifer, Class type, String name, int minOccurs, boolean unbounded, boolean attribute) {
+    public void addElement(JType type, String name, int minOccurs, boolean unbounded, boolean attribute) {
         String fieldName = NameConverter.smart.toVariableName(name);
-        JFieldVar jField = generatedClass.field(modifer, type, fieldName);
-        JAnnotationUse jAnnotationUse = null;
-        if(attribute){
-            jAnnotationUse = jField.annotate(Attribute.class);
+
+        if(properties.contains(fieldName)) return;
+
+        if(minOccurs > 1 || unbounded) {
+
+            JClass propertyClass = (JClass) type;
+            JClass listClass = codeModel.ref(List.class);
+            JClass fieldClass = listClass.narrow(propertyClass);
+            JFieldVar jField = generatedClass.field(JMod.PUBLIC, fieldClass, fieldName);
+
+            JAnnotationUse jAnnotationUse = null;
+            if(attribute){
+                jAnnotationUse = jField.annotate(Attribute.class);
+            } else {
+                jAnnotationUse = jField.annotate(Element.class);
+            }
+
+            jAnnotationUse.param("name", name);
+            if(minOccurs == 0) {
+                jAnnotationUse.param("required", false);
+                addGetterSetter(jField, fieldName, type, false);
+            } else if(minOccurs == 1){
+                jAnnotationUse.param("required", true);
+                addGetterSetter(jField, fieldName, type, false);
+            }
+
         } else {
-            jAnnotationUse = jField.annotate(Element.class);
+
+            JFieldVar jField = generatedClass.field(JMod.PUBLIC, type, fieldName);
+            JAnnotationUse jAnnotationUse = null;
+            if(attribute){
+                jAnnotationUse = jField.annotate(Attribute.class);
+            } else {
+                jAnnotationUse = jField.annotate(Element.class);
+            }
+
+            jAnnotationUse.param("name", name);
+            if(minOccurs == 0) {
+                jAnnotationUse.param("required", false);
+                addGetterSetter(jField, fieldName, type, false);
+            } else if(minOccurs == 1){
+                jAnnotationUse.param("required", true);
+                addGetterSetter(jField, fieldName, type, false);
+            }
         }
 
-        jAnnotationUse.param("name", name);
-        if(minOccurs == 0) {
-            jAnnotationUse.param("required", false);
-            addGetterSetter(jField, fieldName, type);
-        } else if(minOccurs == 1){
-            jAnnotationUse.param("required", true);
-            addGetterSetter(jField, fieldName, type);
-        } else if(minOccurs > 1 || unbounded) {
-            //todo - create list
-        }
+        properties.add(fieldName);
     }
 
-    public void addGetterSetter(JFieldVar jField, String name, Class type) {
+    public void addGetterSetter(JFieldVar jField, String name, JType type, boolean list) {
         String propertyName = NameConverter.smart.toPropertyName(name);
         String getterPrefix = "get";
         String getterPropertyName = propertyName;
-        if(type == Boolean.class) {
+        if(type == codeModel.BOOLEAN) {
             if(name.toLowerCase().startsWith("is")){
                 getterPrefix = "";
                 getterPropertyName = NameConverter.smart.toVariableName(name);
