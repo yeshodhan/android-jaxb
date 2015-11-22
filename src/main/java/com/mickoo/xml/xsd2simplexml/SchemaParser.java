@@ -13,6 +13,8 @@ import org.w3c.dom.Document;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -89,7 +91,7 @@ public class SchemaParser {
     }
 
     public static class SimpleTypeRestriction {
-        public String[] enumeration = null;
+        public List<String> enumeration = null;
         public String maxValue = null;
         public String minValue = null;
         public String length = null;
@@ -128,9 +130,11 @@ public class SchemaParser {
         }
     }
 
-    private void initRestrictions(XSSimpleType xsSimpleType, SimpleTypeRestriction simpleTypeRestriction) {
+    private SimpleTypeRestriction getRestrictions(XSSimpleType xsSimpleType) {
+        SimpleTypeRestriction simpleTypeRestriction = null;
         XSRestrictionSimpleType restriction = xsSimpleType.asRestriction();
         if (restriction != null) {
+            simpleTypeRestriction = new SimpleTypeRestriction();
             Vector<String> enumeration = new Vector<String>();
             Vector<String> pattern = new Vector<String>();
 
@@ -167,12 +171,14 @@ public class SchemaParser {
                 }
             }
             if (enumeration.size() > 0) {
-                simpleTypeRestriction.enumeration = enumeration.toArray(new String[]{});
+                simpleTypeRestriction.enumeration = new ArrayList<String>();
+                simpleTypeRestriction.enumeration.addAll(enumeration);
             }
             if (pattern.size() > 0) {
                 simpleTypeRestriction.pattern = pattern.toArray(new String[]{});
             }
         }
+        return simpleTypeRestriction;
     }
 
     private void processParticle(XSParticle particle, ParseContext parseContext)  throws Exception{
@@ -212,10 +218,10 @@ public class SchemaParser {
         }
     }
 
-    private void processSimpleType(XSSimpleType simpleType, ParseContext parseContext)  throws Exception {
-        SimpleTypeRestriction restriction = new SimpleTypeRestriction();
-        initRestrictions(simpleType, restriction);
+    private SimpleTypeRestriction processSimpleType(XSSimpleType simpleType, ParseContext parseContext)  throws Exception {
+        SimpleTypeRestriction restriction = getRestrictions(simpleType);
         logger.info(restriction.toString());
+        return restriction;
     }
 
     private void processElement(XSElementDecl element, ParseContext parseContext) throws Exception{
@@ -223,14 +229,25 @@ public class SchemaParser {
         System.out.print(parseContext.indent + "[Element " + parseContext.path + "   " + parseContext.getOccurs() + "] of type [" + element.getType().getName() + "]");
         if (element.getType().isComplexType()) {
             GeneratedClass parentClass = parseContext.currentClass;
-            parseContext.currentClass = codeGenerator.createElement(element.getTargetNamespace(), element.getName());
             if(parentClass != null) {
-                parentClass.addElement(parseContext.currentClass.codeModel.parseType(NameConverter.smart.toClassName(element.getName())), element.getName(), parseContext.minOccurs, parseContext.maxOccurs == -1, false);
+                parseContext.currentClass = codeGenerator.createElement(element.getTargetNamespace(), element.getType().getName());
+                parentClass.addElement(parseContext.currentClass.codeModel.parseType(NameConverter.smart.toClassName(element.getType().getName())), element.getName(), parseContext.minOccurs, (parseContext.maxOccurs >1 || parseContext.maxOccurs == -1), false);
+            } else {
+                parseContext.currentClass = codeGenerator.createElement(element.getTargetNamespace(), element.getName());
             }
             processComplexType(element.getType().asComplexType(), parseContext);
         } else {
-            processSimpleType(element.getType().asSimpleType(), parseContext);
-            parseContext.currentClass.addElement(getJType(parseContext.currentClass.codeModel, element.getType().getName()), element.getName(), parseContext.minOccurs, parseContext.maxOccurs == -1, false);
+            SimpleTypeRestriction restrictions = processSimpleType(element.getType().asSimpleType(), parseContext);
+            GeneratedClass enumClass = null;
+            if(restrictions != null && restrictions.enumeration != null) {
+                enumClass = codeGenerator.createEnum(element.getTargetNamespace(), element.getType().getName(), restrictions.enumeration);
+            }
+            if (enumClass == null) {
+                parseContext.currentClass.addElement(getJType(parseContext.currentClass.codeModel, element.getType().getName()), element.getName(), parseContext.minOccurs, (parseContext.maxOccurs >1 || parseContext.maxOccurs == -1), false);
+            } else {
+                parseContext.currentClass.addElement(enumClass.codeModel.parseType(NameConverter.smart.toClassName(element.getType().getName())), element.getName(), parseContext.minOccurs, (parseContext.maxOccurs >1 || parseContext.maxOccurs == -1), false);
+            }
+
         }
     }
 

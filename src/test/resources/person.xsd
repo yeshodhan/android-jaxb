@@ -10,6 +10,9 @@
             <xsd:element name="LastName" type="xsd:string" minOccurs="0" />
             <xsd:element name="Adult" type="xsd:boolean" minOccurs="0" />
             <xsd:element name="Addresses" type="Addresses" minOccurs="0" />
+            <xsd:element name="Gender" type="Gender" minOccurs="0" />
+            <xsd:element name="Favorite_Fruits" type="Fruits" minOccurs="0" maxOccurs="3"/>
+            <xsd:element name="SomeThing_really_whacky-by-the-user" type="xsd:string" minOccurs="0" />
         </xsd:sequence>
     </xsd:complexType>
 
@@ -29,5 +32,27 @@
             <xsd:element name="PostalCode" type="xsd:string" minOccurs="0" />
         </xsd:sequence>
     </xsd:complexType>
+
+    <xsd:simpleType name="Gender">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="MALE"/>
+            <xsd:enumeration value="FEMALE"/>
+            <xsd:enumeration value="NOT_SPECIFIED"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="Fruits">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="Apple"/>
+            <xsd:enumeration value="Banana"/>
+            <xsd:enumeration value="Mango"/>
+            <xsd:enumeration value="Orange"/>
+            <xsd:enumeration value="Grapes"/>
+            <xsd:enumeration value="Watermelon"/>
+            <xsd:enumeration value="Peach"/>
+            <xsd:enumeration value="Apricot"/>
+            <xsd:enumeration value="Grapefruit"/>
+        </xsd:restriction>
+    </xsd:simpleType>
 
 </xsd:schema>

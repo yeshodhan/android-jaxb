@@ -9,6 +9,7 @@ import org.simpleframework.xml.Root;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -57,6 +58,45 @@ public class CodeGenerator {
 
         generatedClasses.put(qualifiedClassName, generatedClass);
         return generatedClass;
+    }
+
+    public GeneratedClass createEnum(String namespace, String name, List<String> values) throws JClassAlreadyExistsException {
+        String className = NameConverter.smart.toClassName(name);
+        String qualifiedClassName = targetPackage + "." + NameConverter.smart.toClassName(className);
+        GeneratedClass generatedClass = generatedClasses.get(qualifiedClassName);
+        if(generatedClass != null) {
+            return generatedClass;
+        }
+
+        JDefinedClass enumClass = codeModel._class(JMod.PUBLIC, qualifiedClassName, ClassType.ENUM);
+        generatedClass = new GeneratedClass(codeModel, enumClass);
+        enumClass.annotate(Root.class).param("name", name);
+        enumClass.annotate(Namespace.class).param("reference", namespace);
+        for(String enumConstant : values) {
+            JEnumConstant enumConst = enumClass.enumConstant(enumConstant);
+        }
+        generatedClasses.put(qualifiedClassName, generatedClass);
+        return generatedClass;
+
+
+//        JFieldVar columnField = enumClass.field(JMod.PRIVATE|JMod.FINAL, String.class, "column");
+//        JFieldVar filterableField = enumClass.field(JMod.PRIVATE | JMod.FINAL, codeModel.BOOLEAN, "filterable");
+//
+//        JMethod enumConstructor = enumClass.constructor(JMod.PRIVATE);
+//        enumConstructor.param(String.class, "column");
+//        enumConstructor.param(codeModel.BOOLEAN, "filterable");
+//        enumConstructor.body().assign(JExpr._this().ref ("column"), JExpr.ref("column"));
+//        enumConstructor.body().assign(JExpr._this().ref ("filterable"), JExpr.ref("filterable"));
+//
+//        JMethod getterColumnMethod = enumClass.method(JMod.PUBLIC, String.class, "getColumn");
+//        getterColumnMethod.body()._return(columnField);
+//        JMethod getterFilterMethod = enumClass.method(JMod.PUBLIC, codeModel.BOOLEAN, "isFilterable");
+//        getterFilterMethod.body()._return(filterableField);
+//
+//        JEnumConstant enumConst = enumClass.enumConstant("FOO_BAR");
+//        enumConst.arg(JExpr.lit("fooBar"));
+//        enumConst.arg(JExpr.lit(true));
+
     }
 
     public void writeClasses() throws IOException {

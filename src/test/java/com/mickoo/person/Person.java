@@ -1,7 +1,9 @@
 
 package com.mickoo.person;
 
+import java.util.List;
 import org.simpleframework.xml.Element;
+import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Namespace;
 import org.simpleframework.xml.Root;
 
@@ -24,6 +26,12 @@ public class Person {
     private Boolean adult;
     @Element(name = "Addresses", required = false)
     private Addresses addresses;
+    @Element(name = "Gender", required = false)
+    private Gender gender;
+    @ElementList(name = "Favorite_Fruits", entry = "Favorite_Fruits", inline = true, required = false)
+    private List<Fruits> favoriteFruits;
+    @Element(name = "SomeThing_really_whacky-by-the-user", required = false)
+    private String someThingReallyWhackyByTheUser;
 
     public Person() {
     }
@@ -58,6 +66,30 @@ public class Person {
 
     public void setAddresses(Addresses addresses) {
         this.addresses = addresses;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public List<Fruits> getFavoriteFruits() {
+        return favoriteFruits;
+    }
+
+    public void setFavoriteFruits(List<Fruits> favoriteFruits) {
+        this.favoriteFruits = favoriteFruits;
+    }
+
+    public String getSomeThingReallyWhackyByTheUser() {
+        return someThingReallyWhackyByTheUser;
+    }
+
+    public void setSomeThingReallyWhackyByTheUser(String someThingReallyWhackyByTheUser) {
+        this.someThingReallyWhackyByTheUser = someThingReallyWhackyByTheUser;
     }
 
 }

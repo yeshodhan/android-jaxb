@@ -43,6 +43,7 @@ public class GeneratedClass {
 
             JAnnotationUse jAnnotationUse = jField.annotate(ElementList.class);
             jAnnotationUse.param("name", name);
+            jAnnotationUse.param("entry", name);
             jAnnotationUse.param("inline", true);
             if(minOccurs == 0) {
                 jAnnotationUse.param("required", false);

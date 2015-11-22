@@ -1,11 +1,10 @@
 
 package com.mickoo.person;
 
+import java.util.List;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Namespace;
 import org.simpleframework.xml.Root;
-
-import java.util.List;
 
 
 /**
@@ -18,7 +17,7 @@ import java.util.List;
 @Namespace(reference = "http://person.mickoo.com/")
 public class Addresses {
 
-    @ElementList(name = "Address", inline = true, required = false)
+    @ElementList(name = "Address", entry = "Address", inline = true, required = false)
     private List<Address> address;
 
     public Addresses() {

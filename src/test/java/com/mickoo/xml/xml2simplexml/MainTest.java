@@ -1,8 +1,6 @@
 package com.mickoo.xml.xml2simplexml;
 
-import com.mickoo.person.Address;
-import com.mickoo.person.Addresses;
-import com.mickoo.person.Person;
+import com.mickoo.person.*;
 import com.mickoo.xml.xsd2simplexml.SchemaParser;
 import org.junit.Test;
 import org.simpleframework.xml.Serializer;
@@ -30,6 +28,15 @@ public class MainTest {
         person.setFirstName("John");
         person.setLastName("Doe");
         person.setAdult(true);
+
+        person.setGender(Gender.MALE);
+
+        List<Fruits> fruits = new ArrayList<Fruits>();
+        fruits.add(Fruits.Apple);
+        fruits.add(Fruits.Mango);
+        person.setFavoriteFruits(fruits);
+
+        person.setSomeThingReallyWhackyByTheUser("Whacky shit!");
 
         Addresses addresses = new Addresses();
         person.setAddresses(addresses);

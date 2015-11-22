@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <Person xmlns="http://person.mickoo.com/">
    <FirstName>John</FirstName>
    <LastName>Doe</LastName>
@@ -19,4 +18,8 @@
          <Country>United States</Country>
       </Address>
    </Addresses>
+   <Gender>MALE</Gender>
+   <Favorite_Fruits>Apple</Favorite_Fruits>
+   <Favorite_Fruits>Mango</Favorite_Fruits>
+   <SomeThing_really_whacky-by-the-user>Whacky shit!</SomeThing_really_whacky-by-the-user>
 </Person>
