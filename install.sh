@@ -17,7 +17,7 @@ echo "Installing ..."
 mv ${JAR_FILE} ${INSTALL_DIR}
 cd ${INSTALL_DIR}
 echo "java -jar ${INSTALL_DIR}/${JAR_FILE} \"\$@\"" > androidjaxb
-rm /usr/bin/androidjaxb
+#rm /usr/bin/androidjaxb
 ln -n androidjaxb /usr/bin/androidjaxb
 chmod +x /usr/bin/androidjaxb
 echo "Installation Complete"
