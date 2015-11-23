@@ -159,6 +159,7 @@ public class CodeGenerator {
     }
 
     public void writeClasses() throws IOException {
+        logger.info("Generating classes under " + destinationDir.getAbsolutePath());
         codeModel.build(destinationDir);
     }
 

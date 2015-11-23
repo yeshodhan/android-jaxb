@@ -2,6 +2,7 @@
 package com.mickoo.person;
 
 import java.util.List;
+import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Namespace;
@@ -32,6 +33,8 @@ public class Person {
     private List<Fruits> favoriteFruits;
     @Element(name = "SomeThing_really_whacky-by-the-user", required = false)
     private String someThingReallyWhackyByTheUser;
+    @Attribute(name = "id", required = false)
+    private String id;
 
     public Person() {
     }
@@ -90,6 +93,14 @@ public class Person {
 
     public void setSomeThingReallyWhackyByTheUser(String someThingReallyWhackyByTheUser) {
         this.someThingReallyWhackyByTheUser = someThingReallyWhackyByTheUser;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
 }

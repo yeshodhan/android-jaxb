@@ -82,7 +82,7 @@ public class Main {
     }
 
     private static void printUsage(Options options) {
-        formatter.printHelp("java -jar android-jaxb-1.0.jar <options> your-schema-file.xsd", headerFooter, options, headerFooter);
+        formatter.printHelp("java -jar android-jaxb-1.0.jar [options] your-schema-file.xsd", headerFooter, options, headerFooter);
     }
 
 }

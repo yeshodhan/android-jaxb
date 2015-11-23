@@ -5,16 +5,16 @@ import com.mickoo.xml.xsd2simplexml.bindings.EnumBinding;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JType;
 import com.sun.xml.xsom.*;
-import com.sun.xml.xsom.parser.*;
+import com.sun.xml.xsom.parser.JAXPParser;
+import com.sun.xml.xsom.parser.XMLParser;
+import com.sun.xml.xsom.parser.XSOMParser;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * Schema Parser
@@ -31,8 +31,12 @@ public class SchemaParser {
     private XSSchema schema;
     private Bindings bindings;
 
+    private long startTime = 0;
+
 
     public SchemaParser(File xmlSchema, File destinationDir, String targetPackage, File schemaBindings) throws Exception {
+
+        startTime = System.currentTimeMillis();
 
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -62,7 +66,11 @@ public class SchemaParser {
             ParseContext parseContext = new ParseContext();
             processElement(element, parseContext);
         }
+        logger.info("Schema parsing complete.");
         codeGenerator.writeClasses();
+        long totalTime = (System.currentTimeMillis() - startTime);
+        logger.info("Android JAXB execution complete. Generated " + codeGenerator.generatedClasses.size() + " classes in " + totalTime + " milliseconds.");
+        logger.info("Please verify the generated classes for compile errors and syntax issues.");
     }
 
     protected JType getJType(JCodeModel codeModel, String type) {
@@ -223,13 +231,85 @@ public class SchemaParser {
         if (particle != null) {
             processParticle(particle, parseContext);
         }
+        Collection<? extends XSAttributeUse> c = complexType.getAttributeUses();
+        Iterator<? extends XSAttributeUse> i = c.iterator();
+        while(i.hasNext()) {
+            XSAttributeUse attUse = i.next();
+            processAttribute(attUse, parseContext);
+        }
     }
 
-    protected SimpleTypeRestriction processSimpleType(XSSimpleType simpleType, ParseContext parseContext) throws Exception {
+    private void processAttribute(XSAttributeUse attributeUse, ParseContext parseContext) throws Exception {
+        XSAttributeDecl attributeDecl = attributeUse.getDecl();
+        XSSimpleType xsSimpleType = attributeDecl.getType();
+
+        ParseContext attributeContext = new ParseContext();
+
+        if (attributeUse.isRequired()){
+            attributeContext.minOccurs = 1;
+        } else {
+            attributeContext.minOccurs = 0;
+        }
+
+        attributeContext.currentClass = parseContext.currentClass;
+        attributeContext.maxOccurs = 1;
+        attributeContext.path = parseContext.path + "/@" + attributeDecl.getName();
+
+        System.out.print(parseContext.indent + "[Attribute " + attributeContext.path + "   " + attributeContext.getOccurs() + "] of type [" + xsSimpleType.getName() + "]");
+        addSimpleType(attributeDecl.getName(), xsSimpleType, attributeContext, true);
+
+    }
+
+    private SimpleTypeRestriction processSimpleType(XSSimpleType simpleType, ParseContext parseContext) throws Exception {
         SimpleTypeRestriction restriction = getRestrictions(simpleType);
         logger.info(restriction.toString());
         return restriction;
     }
+    
+    private void addSimpleType(String name, XSSimpleType simpleType, ParseContext parseContext, boolean isAttribute) throws Exception {
+        SimpleTypeRestriction restrictions = processSimpleType(simpleType, parseContext);
+
+        if (restrictions.enumeration == null) {
+
+            //add simple element with primitive property to class
+
+            parseContext.currentClass.addElement(
+                    getJType(parseContext.currentClass.codeModel, simpleType.getName()),
+                    name,
+                    parseContext.minOccurs,
+                    parseContext.isUnbounded(),
+                    isAttribute
+            );
+
+        } else {
+
+            //create enumeration
+
+            EnumBinding enumBinding = bindings.getEnumBinding(simpleType.getName());
+
+            GeneratedClass enumClass = codeGenerator.createEnum(
+                    simpleType.getTargetNamespace(),
+                    simpleType.getName(),
+                    restrictions.enumeration,
+                    enumBinding
+            );
+
+            //add enumeration property to class
+
+            String className = NameConverter.smart.toClassName(simpleType.getName());
+            if(enumBinding != null && !Utils.isEmpty(enumBinding.getClassName())) className = enumBinding.getClassName();
+
+            parseContext.currentClass.addElement(
+                    enumClass.codeModel.parseType(className),
+                    name,
+                    parseContext.minOccurs,
+                    parseContext.isUnbounded(),
+                    isAttribute
+            );
+        }
+    }
+    
+    
 
     protected void processElement(XSElementDecl element, ParseContext parseContext) throws Exception {
         parseContext.path += "/" + element.getName();
@@ -262,48 +342,10 @@ public class SchemaParser {
                 );
             }
             processComplexType(element.getType().asComplexType(), parseContext);
+            
         } else {
-
-            SimpleTypeRestriction restrictions = processSimpleType(element.getType().asSimpleType(), parseContext);
-
-            if (restrictions.enumeration == null) {
-
-                //add simple element with primitive property to class
-
-                parseContext.currentClass.addElement(
-                        getJType(parseContext.currentClass.codeModel, element.getType().getName()),
-                        element.getName(),
-                        parseContext.minOccurs,
-                        parseContext.isUnbounded(),
-                        false
-                );
-
-            } else {
-
-                //create enumeration
-
-                EnumBinding enumBinding = bindings.getEnumBinding(element.getType().getName());
-
-                GeneratedClass enumClass = codeGenerator.createEnum(
-                        element.getTargetNamespace(),
-                        element.getType().getName(),
-                        restrictions.enumeration,
-                        enumBinding
-                );
-
-                //add enumeration property to class
-
-                String className = NameConverter.smart.toClassName(element.getType().getName());
-                if(enumBinding != null && !Utils.isEmpty(enumBinding.getClassName())) className = enumBinding.getClassName();
-
-                parseContext.currentClass.addElement(
-                        enumClass.codeModel.parseType(className),
-                        element.getName(),
-                        parseContext.minOccurs,
-                        parseContext.isUnbounded(),
-                        false
-                );
-            }
+            
+            addSimpleType(element.getName(), element.getType().asSimpleType(), parseContext, false);
 
         }
     }

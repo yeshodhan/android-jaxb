@@ -14,6 +14,7 @@
             <xsd:element name="Favorite_Fruits" type="Fruits" minOccurs="0" maxOccurs="3"/>
             <xsd:element name="SomeThing_really_whacky-by-the-user" type="xsd:string" minOccurs="0" />
         </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:string"/>
     </xsd:complexType>
 
     <xsd:complexType name="Addresses">

@@ -27,6 +27,7 @@ public class SchemaParserTest {
         Serializer serializer = new Persister();
         Person person = new Person();
 
+        person.setId("1001");
         person.setFirstName("John");
         person.setLastName("Doe");
         person.setAdult(true);
@@ -78,7 +79,7 @@ public class SchemaParserTest {
     @Test
     public void test() throws Exception {
         parser();
-//        serialize();
+        serialize();
     }
 
 }

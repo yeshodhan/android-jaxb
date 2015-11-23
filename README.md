@@ -7,17 +7,18 @@ Library works to convert simple XSD files without inheritance and multiple names
 
  * Works well with Android
  * Creates JAXB like Class, Property and Method names.
+ * Support Enums and Attributes.
  * Customize generated code using a JSON bindings file.
 
 ### Usage
 
  * Download the Android JAXB executable jar file from : https://s3.amazonaws.com/yeshodhan/android-jaxb-1.0.jar
- * Run > java -jar android-jaxb-1.0.jar <options> your-schema-file.xsd
+ * Run > java -jar android-jaxb-1.0.jar [options] your-schema-file.xsd
  * See sample usage below:
  
 ```bash
 ➜  target git:(master) ✗ java -jar android-jaxb-1.0.jar --help
-usage: java -jar android-jaxb-1.0.jar <options> your-schema-file.xsd
+usage: java -jar android-jaxb-1.0.jar [options] your-schema-file.xsd
 ---------------------------------------------------------------------
  -b,--bindings <arg>      (optional) bindings JSON file
  -d,--destination <arg>   destination directory for generated classes
@@ -27,31 +28,36 @@ usage: java -jar android-jaxb-1.0.jar <options> your-schema-file.xsd
  -v,--version             Version
 ---------------------------------------------------------------------
 ➜  target git:(master) ✗ java -jar android-jaxb-1.0.jar -b /Users/yeshodhan/projects/xsd-to-simplexml/src/test/resources/bindings.json -d /Users/yeshodhan/projects/xsd-to-simplexml/src/test/java -p com.mickoo.person /Users/yeshodhan/projects/xsd-to-simplexml/src/test/resources/person.xsd
-2015-11-22 15:00:36 INFO  Bindings:36 - Reading bindings ...
-2015-11-22 15:00:36 INFO  CodeGenerator:39 - Code Generator Initialized. Destination Directory: /Users/yeshodhan/projects/xsd-to-simplexml/src/test/java
-[Element /Person    Min Occurs: null, Max Occurs: null ] of type [Person]2015-11-22 15:00:36 INFO  SchemaParser:205 - [Start of sequence Min Occurs: 1, Max Occurs: 1 ]
-	[Element /Person/FirstName    Min Occurs: 0, Max Occurs: 1 ] of type [string]2015-11-22 15:00:36 INFO  SchemaParser:230 -
-	[Element /Person/LastName    Min Occurs: 0, Max Occurs: 1 ] of type [string]2015-11-22 15:00:36 INFO  SchemaParser:230 -
-	[Element /Person/Adult    Min Occurs: 0, Max Occurs: 1 ] of type [boolean]2015-11-22 15:00:36 INFO  SchemaParser:230 -
-	[Element /Person/Addresses    Min Occurs: 0, Max Occurs: 1 ] of type [Addresses]2015-11-22 15:00:36 INFO  SchemaParser:205 - 	[Start of sequence Min Occurs: 1, Max Occurs: 1 ]
-		[Element /Person/Addresses/Address    Min Occurs: 0, Max Occurs: -1 ] of type [Address]2015-11-22 15:00:36 INFO  SchemaParser:205 - 		[Start of sequence Min Occurs: 1, Max Occurs: 1 ]
-			[Element /Person/Addresses/Address/Line1    Min Occurs: 0, Max Occurs: 1 ] of type [string]2015-11-22 15:00:36 INFO  SchemaParser:230 -
-			[Element /Person/Addresses/Address/Line2    Min Occurs: 0, Max Occurs: 1 ] of type [string]2015-11-22 15:00:36 INFO  SchemaParser:230 -
-			[Element /Person/Addresses/Address/City    Min Occurs: 0, Max Occurs: 1 ] of type [string]2015-11-22 15:00:36 INFO  SchemaParser:230 -
-			[Element /Person/Addresses/Address/State    Min Occurs: 0, Max Occurs: 1 ] of type [string]2015-11-22 15:00:36 INFO  SchemaParser:230 -
-			[Element /Person/Addresses/Address/Country    Min Occurs: 1, Max Occurs: 1 ] of type [string]2015-11-22 15:00:36 INFO  SchemaParser:230 -
-			[Element /Person/Addresses/Address/PostalCode    Min Occurs: 0, Max Occurs: 1 ] of type [string]2015-11-22 15:00:36 INFO  SchemaParser:230 -
-2015-11-22 15:00:36 INFO  SchemaParser:213 - 		[End of sequence]
-2015-11-22 15:00:36 INFO  SchemaParser:213 - 	[End of sequence]
-	[Element /Person/Gender    Min Occurs: 0, Max Occurs: 1 ] of type [Gender]2015-11-22 15:00:37 INFO  SchemaParser:230 - [Values = MALE, FEMALE, NOT_SPECIFIED]
-	[Element /Person/Favorite_Fruits    Min Occurs: 0, Max Occurs: 3 ] of type [Fruits]2015-11-22 15:00:37 INFO  SchemaParser:230 - [Values = Apple, Banana, Mango, Orange, Grapes, Watermelon, Peach, Apricot, Grapefruit]
-	[Element /Person/SomeThing_really_whacky-by-the-user    Min Occurs: 0, Max Occurs: 1 ] of type [string]2015-11-22 15:00:37 INFO  SchemaParser:230 -
-2015-11-22 15:00:37 INFO  SchemaParser:213 - [End of sequence]
+Reading bindings ...
+Code Generator Initialized. Destination Directory: /Users/yeshodhan/projects/xsd-to-simplexml/src/test/java
+[Element /Person    Min Occurs: null, Max Occurs: null ] of type [Person][Start of sequence Min Occurs: 1, Max Occurs: 1 ]
+	[Element /Person/FirstName    Min Occurs: 0, Max Occurs: 1 ] of type [string]
+	[Element /Person/LastName    Min Occurs: 0, Max Occurs: 1 ] of type [string]
+	[Element /Person/Adult    Min Occurs: 0, Max Occurs: 1 ] of type [boolean]
+	[Element /Person/Addresses    Min Occurs: 0, Max Occurs: 1 ] of type [Addresses]	[Start of sequence Min Occurs: 1, Max Occurs: 1 ]
+		[Element /Person/Addresses/Address    Min Occurs: 0, Max Occurs: -1 ] of type [Address]		[Start of sequence Min Occurs: 1, Max Occurs: 1 ]
+			[Element /Person/Addresses/Address/Line1    Min Occurs: 0, Max Occurs: 1 ] of type [string]
+			[Element /Person/Addresses/Address/Line2    Min Occurs: 0, Max Occurs: 1 ] of type [string]
+			[Element /Person/Addresses/Address/City    Min Occurs: 0, Max Occurs: 1 ] of type [string]
+			[Element /Person/Addresses/Address/State    Min Occurs: 0, Max Occurs: 1 ] of type [string]
+			[Element /Person/Addresses/Address/Country    Min Occurs: 1, Max Occurs: 1 ] of type [string]
+			[Element /Person/Addresses/Address/PostalCode    Min Occurs: 0, Max Occurs: 1 ] of type [string]
+		[End of sequence]
+	[End of sequence]
+	[Element /Person/Gender    Min Occurs: 0, Max Occurs: 1 ] of type [Gender][Values = MALE, FEMALE, NOT_SPECIFIED]	
+	[Element /Person/Favorite_Fruits    Min Occurs: 0, Max Occurs: 3 ] of type [Fruits][Values = Apple, Banana, Mango, Orange, Grapes, Watermelon, Peach, Apricot, Grapefruit]	
+	[Element /Person/SomeThing_really_whacky-by-the-user    Min Occurs: 0, Max Occurs: 1 ] of type [string]
+[End of sequence]
+[Attribute /Person/@id    Min Occurs: 0, Max Occurs: 1 ] of type [string]
+Schema parsing complete.
+Generating classes under /Users/yeshodhan/projects/xsd-to-simplexml/src/test/java
 com/mickoo/person/Address.java
 com/mickoo/person/Addresses.java
 com/mickoo/person/Fruits.java
 com/mickoo/person/GenderEnum.java
 com/mickoo/person/Person.java
+Android JAXB execution complete. Generated 5 classes in 315 milliseconds.
+Please verify the generated classes for compile errors and syntax issues.
 ``` 
 
 ### Example
@@ -75,6 +81,7 @@ com/mickoo/person/Person.java
             <xsd:element name="Favorite_Fruits" type="Fruits" minOccurs="0" maxOccurs="3"/>
             <xsd:element name="SomeThing_really_whacky-by-the-user" type="xsd:string" minOccurs="0" />
         </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:string"/>
     </xsd:complexType>
 
     <xsd:complexType name="Addresses">
@@ -330,14 +337,15 @@ public enum GenderEnum {
 
 }
 
+
 package com.mickoo.person;
 
+import java.util.List;
+import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Namespace;
 import org.simpleframework.xml.Root;
-
-import java.util.List;
 
 
 /**
@@ -364,6 +372,8 @@ public class Person {
     private List<Fruits> favoriteFruits;
     @Element(name = "SomeThing_really_whacky-by-the-user", required = false)
     private String someThingReallyWhackyByTheUser;
+    @Attribute(name = "id", required = false)
+    private String id;
 
     public Person() {
     }
@@ -424,7 +434,16 @@ public class Person {
         this.someThingReallyWhackyByTheUser = someThingReallyWhackyByTheUser;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
 }
+
 
 
 
@@ -440,6 +459,8 @@ public class Person {
     public void serialize() throws Exception {
         Serializer serializer = new Persister();
         Person person = new Person();
+        
+        person.setId("1001");
 
         person.setFirstName("John");
         person.setLastName("Doe");
