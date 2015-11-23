@@ -515,7 +515,7 @@ public class Person {
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<Person xmlns="http://person.mickoo.com/">
+<Person id="1001" xmlns="http://person.mickoo.com/">
    <FirstName>John</FirstName>
    <LastName>Doe</LastName>
    <Adult>true</Adult>
