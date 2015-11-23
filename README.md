@@ -1,7 +1,7 @@
-# XML Schema (XSD) to Simple XML Annotated Java (Android JAXB)
-##Library to convert XML Schema to SimpleXML annotated Java classes for Android
+# Android JAXB
+##Library to generate SimpleXML annotated Java classes  from XML Schema.
 
-Library works to convert simple XSD files without inheritance and multiple namespaces to SimpleXML annotated Java classes. This solves my current requirement.
+Use this library to generate SimpleXML annotated Java classes from simple XSD files without inheritance and multiple namespaces.
 
 ### Features
 
@@ -9,6 +9,16 @@ Library works to convert simple XSD files without inheritance and multiple names
  * Creates JAXB like Class, Property and Method names.
  * Support Enums and Attributes.
  * Customize generated code using a JSON bindings file.
+
+### Motivation  
+
+JAXB is not supported officially on Android. I'm writing a lot of Web Service integration code at this point. I hate using SOAP and XMLSchemas due to all the overheads (coding + network + CPU) involved with XML. 
+
+But since I have no choice at the moment, decided to use JAXB. But then, I realized, my implementation will be used by the Android team and Android does not support JAXB. Googled for a lot of different alternatives, but couldn't find a reliable one.
+  
+SimpleXML is really light weight and just does the job. There is no JAXB equivalent to SimpleXML out there right now. Hence, Android JAXB.  
+
+It's straight and simple as of now, and does not support multiple XSDs, inheritance and other complex features. I'll add more features in the future to enhance the library. I'm tracking enhancements and new feature using issues.
 
 ### Usage
 
