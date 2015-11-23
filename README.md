@@ -70,6 +70,28 @@ Android JAXB execution complete. Generated 5 classes in 315 milliseconds.
 Please verify the generated classes for compile errors and syntax issues.
 ``` 
 
+ * If you want to run it from any directory, download install.sh file and run > sudo ./install.sh to download and install. Android jaxb will be available in your path.
+ 
+ ```bash
+ ➜  xsd-to-simplexml git:(master) ✗ sudo ./install.sh
+ Downloading AndroidJAXB from https://s3.amazonaws.com/yeshodhan/android-jaxb-1.0.jar
+   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                  Dload  Upload   Total   Spent    Left  Speed
+ 100 2444k  100 2444k    0     0   463k      0  0:00:05  0:00:05 --:--:--  537k
+ Installing ...
+ Installation Complete
+ usage: java -jar android-jaxb-1.0.jar [options] your-schema-file.xsd
+ ---------------------------------------------------------------------
+  -b,--bindings <arg>      (optional) bindings JSON file
+  -d,--destination <arg>   destination directory for generated classes
+  -h,--help                Help on usage
+  -p,--package <arg>       package name for generated classes. Eg.:
+                           com.example.app
+  -v,--version             Version
+ ---------------------------------------------------------------------
+ ```
+ 
+
 ### Example
 
 #### XML Schema  
