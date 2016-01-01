@@ -29,10 +29,10 @@ public class CodeGeneratorTest {
         String namespace = "http://person.mickoo.com/";
 
         GeneratedClass generatedClass = codeGenerator.createElement(namespace, className);
-        generatedClass.addElement(codeGenerator.jtype(String.class), "FirstName", 0, false, false);
-        generatedClass.addElement(codeGenerator.jtype(String.class), "LastName", 0, false, false);
-        generatedClass.addElement(codeGenerator.jtype(String.class), "Is_Adult", 0, false, false);
-        generatedClass.addElement(codeGenerator.jtype(String.class), "Country_Of_Birth", 0, false, false);
+        generatedClass.addElement(codeGenerator.jtype(String.class), "FirstName", 0, false, ElementType.ELEMENT);
+        generatedClass.addElement(codeGenerator.jtype(String.class), "LastName", 0, false, ElementType.ELEMENT);
+        generatedClass.addElement(codeGenerator.jtype(String.class), "Is_Adult", 0, false, ElementType.ELEMENT);
+        generatedClass.addElement(codeGenerator.jtype(String.class), "Country_Of_Birth", 0, false, ElementType.ELEMENT);
 
         codeGenerator.writeClasses();
 

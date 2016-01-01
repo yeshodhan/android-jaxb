@@ -13,6 +13,8 @@
             <xsd:element name="Gender" type="Gender" minOccurs="0" />
             <xsd:element name="Favorite_Fruits" type="Fruits" minOccurs="0" maxOccurs="3"/>
             <xsd:element name="SomeThing_really_whacky-by-the-user" type="xsd:string" minOccurs="0" />
+            <xsd:element name="Pets" type="Pets" minOccurs="0"/>
+            <xsd:element name="Phone" type="Phone" minOccurs="0" maxOccurs="3"/>
         </xsd:sequence>
         <xsd:attribute name="id" type="xsd:string"/>
     </xsd:complexType>
@@ -55,5 +57,27 @@
             <xsd:enumeration value="Grapefruit"/>
         </xsd:restriction>
     </xsd:simpleType>
+    
+    <xsd:complexType name="Pets">
+        <xsd:sequence>
+            <xsd:element name="Pet" type="Pet" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="Pet">
+    	<xsd:simpleContent>
+    		<xsd:extension base="xsd:string">
+    			<xsd:attribute name="type" type="xsd:string"/>
+    		</xsd:extension>
+    	</xsd:simpleContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="Phone">
+    	<xsd:simpleContent>
+    		<xsd:extension base="xsd:int">
+    			<xsd:attribute name="type" type="xsd:string"/>
+    		</xsd:extension>
+    	</xsd:simpleContent>
+    </xsd:complexType>
 
 </xsd:schema>
