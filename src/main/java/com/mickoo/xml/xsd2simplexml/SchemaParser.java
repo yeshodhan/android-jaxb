@@ -231,6 +231,10 @@ public class SchemaParser {
         if (particle != null) {
             processParticle(particle, parseContext);
         }
+        XSSimpleType xsSimpleType = complexType.getContentType().asSimpleType();
+        if (xsSimpleType != null) {
+        	processText("value", xsSimpleType, parseContext);
+        }
         Collection<? extends XSAttributeUse> c = complexType.getAttributeUses();
         Iterator<? extends XSAttributeUse> i = c.iterator();
         while(i.hasNext()) {
@@ -256,7 +260,22 @@ public class SchemaParser {
         attributeContext.path = parseContext.path + "/@" + attributeDecl.getName();
 
         System.out.print(parseContext.indent + "[Attribute " + attributeContext.path + "   " + attributeContext.getOccurs() + "] of type [" + xsSimpleType.getName() + "]");
-        addSimpleType(attributeDecl.getName(), xsSimpleType, attributeContext, true);
+        addSimpleType(attributeDecl.getName(), xsSimpleType, attributeContext, ElementType.ATTRIBUTE);
+
+    }
+    
+    private void processText(String name, XSSimpleType xsSimpleType, ParseContext parseContext) throws Exception {
+
+        ParseContext attributeContext = new ParseContext();
+
+        attributeContext.minOccurs = 1;
+
+        attributeContext.currentClass = parseContext.currentClass;
+        attributeContext.maxOccurs = 1;
+        attributeContext.path = parseContext.path + "/@" + name;
+
+        System.out.print(parseContext.indent + "[Text " + attributeContext.path + "   " + attributeContext.getOccurs() + "] of type [" + xsSimpleType.getName() + "]");
+        addSimpleType(name, xsSimpleType, attributeContext, ElementType.TEXT);
 
     }
 
@@ -266,7 +285,7 @@ public class SchemaParser {
         return restriction;
     }
     
-    private void addSimpleType(String name, XSSimpleType simpleType, ParseContext parseContext, boolean isAttribute) throws Exception {
+    private void addSimpleType(String name, XSSimpleType simpleType, ParseContext parseContext, ElementType elementType) throws Exception {
         SimpleTypeRestriction restrictions = processSimpleType(simpleType, parseContext);
 
         if (restrictions.enumeration == null) {
@@ -278,7 +297,7 @@ public class SchemaParser {
                     name,
                     parseContext.minOccurs,
                     parseContext.isUnbounded(),
-                    isAttribute
+                    elementType
             );
 
         } else {
@@ -304,7 +323,7 @@ public class SchemaParser {
                     name,
                     parseContext.minOccurs,
                     parseContext.isUnbounded(),
-                    isAttribute
+                    elementType
             );
         }
     }
@@ -331,7 +350,7 @@ public class SchemaParser {
                         element.getName(),
                         parseContext.minOccurs,
                         parseContext.isUnbounded(),
-                        false
+                        ElementType.ELEMENT
                 );
 
             } else {
@@ -345,7 +364,7 @@ public class SchemaParser {
             
         } else {
             
-            addSimpleType(element.getName(), element.getType().asSimpleType(), parseContext, false);
+            addSimpleType(element.getName(), element.getType().asSimpleType(), parseContext, ElementType.ELEMENT);
 
         }
     }

@@ -33,6 +33,10 @@ public class Person {
     private List<Fruits> favoriteFruits;
     @Element(name = "SomeThing_really_whacky-by-the-user", required = false)
     private String someThingReallyWhackyByTheUser;
+    @Element(name = "Pets", required = false)
+    private Pets pets;
+    @ElementList(name = "Phone", entry = "Phone", inline = true, required = false)
+    private List<Phone> phone;
     @Attribute(name = "id", required = false)
     private String id;
 
@@ -93,6 +97,22 @@ public class Person {
 
     public void setSomeThingReallyWhackyByTheUser(String someThingReallyWhackyByTheUser) {
         this.someThingReallyWhackyByTheUser = someThingReallyWhackyByTheUser;
+    }
+
+    public Pets getPets() {
+        return pets;
+    }
+
+    public void setPets(Pets pets) {
+        this.pets = pets;
+    }
+
+    public List<Phone> getPhone() {
+        return phone;
+    }
+
+    public void setPhone(List<Phone> phone) {
+        this.phone = phone;
     }
 
     public String getId() {

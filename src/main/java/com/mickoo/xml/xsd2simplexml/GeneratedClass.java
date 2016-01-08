@@ -4,6 +4,7 @@ import com.sun.codemodel.*;
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
+import org.simpleframework.xml.Text;
 
 import java.util.HashSet;
 import java.util.List;
@@ -28,7 +29,7 @@ public class GeneratedClass {
         this.generatedClass = generatedClass;
     }
 
-    public void addElement(JType type, String name, int minOccurs, boolean unbounded, boolean attribute) {
+    public void addElement(JType type, String name, int minOccurs, boolean unbounded, ElementType elementType) {
         String fieldName = NameConverter.smart.toVariableName(name);
 
         if(properties.contains(fieldName)) return;
@@ -56,13 +57,21 @@ public class GeneratedClass {
 
             JFieldVar jField = generatedClass.field(JMod.PRIVATE, type, fieldName);
             JAnnotationUse jAnnotationUse = null;
-            if(attribute){
-                jAnnotationUse = jField.annotate(Attribute.class);
-            } else {
-                jAnnotationUse = jField.annotate(Element.class);
+            switch(elementType){
+            case ATTRIBUTE:
+            	jAnnotationUse = jField.annotate(Attribute.class);
+            	break;
+            case ELEMENT:
+            	jAnnotationUse = jField.annotate(Element.class);
+            	break;
+            case TEXT:
+            	jAnnotationUse = jField.annotate(Text.class);
+            	break;
             }
-
-            jAnnotationUse.param("name", name);
+            
+            if(elementType != ElementType.TEXT){
+            	jAnnotationUse.param("name", name);
+            }
             if(minOccurs == 0) {
                 jAnnotationUse.param("required", false);
                 addGetterSetter(jField, fieldName, type, false);

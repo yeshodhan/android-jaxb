@@ -8,27 +8,27 @@ import org.simpleframework.xml.Root;
 
 
 /**
- * Addresses<br>
+ * Pets<br>
  * Generated using Android JAXB<br>
  * @link https://github.com/yeshodhan/android-jaxb
  * 
  */
-@Root(name = "Addresses")
+@Root(name = "Pets")
 @Namespace(reference = "http://person.mickoo.com/")
-public class Addresses {
+public class Pets {
 
-    @ElementList(name = "Address", entry = "Address", inline = true, required = false)
-    private List<Address> address;
+    @ElementList(name = "Pet", entry = "Pet", inline = true, required = false)
+    private List<Pet> pet;
 
-    public Addresses() {
+    public Pets() {
     }
 
-    public List<Address> getAddress() {
-        return address;
+    public List<Pet> getPet() {
+        return pet;
     }
 
-    public void setAddress(List<Address> address) {
-        this.address = address;
+    public void setPet(List<Pet> pet) {
+        this.pet = pet;
     }
 
 }

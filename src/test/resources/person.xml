@@ -22,4 +22,11 @@
    <Favorite_Fruits>Apple</Favorite_Fruits>
    <Favorite_Fruits>Mango</Favorite_Fruits>
    <SomeThing_really_whacky-by-the-user>Whacky shit!</SomeThing_really_whacky-by-the-user>
+   <Pets>
+      <Pet type="Cat">Garfield</Pet>
+      <Pet type="Dog">Oddie</Pet>
+      <Pet type="Fish">Nemo</Pet>
+   </Pets>
+   <Phone type="Mobile">800800800</Phone>
+   <Phone type="Home">505050505</Phone>
 </Person>
