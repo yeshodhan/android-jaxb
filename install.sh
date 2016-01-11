@@ -5,7 +5,7 @@ set -e
 INSTALL_DIR_BASE="/usr/lib/mickoo"
 INSTALL_DIR="${INSTALL_DIR_BASE}/android-jaxb"
 TMP_DIR="/tmp/mickoo/androidjaxb"
-JAR_FILE="android-jaxb-1.0.jar"
+JAR_FILE="android-jaxb-1.0.1.jar"
 DOWNLOAD_URL="https://s3.amazonaws.com/yeshodhan/${JAR_FILE}"
 
 mkdir -p ${INSTALL_DIR}

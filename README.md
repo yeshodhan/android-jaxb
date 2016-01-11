@@ -22,12 +22,12 @@ It's straight and simple as of now, and does not support multiple XSDs, inherita
 
 ### Usage
 
- * Download the Android JAXB executable jar file from : https://s3.amazonaws.com/yeshodhan/android-jaxb-1.0.jar
- * Run > java -jar android-jaxb-1.0.jar [options] your-schema-file.xsd
+ * Download the Android JAXB executable jar file from : https://s3.amazonaws.com/yeshodhan/android-jaxb-1.0.1.jar
+ * Run > java -jar android-jaxb-1.0.1.jar [options] your-schema-file.xsd
  * See sample usage below:
  
 ```bash
-➜  target git:(master) ✗ java -jar android-jaxb-1.0.jar --help
+➜  target git:(master) ✗ java -jar android-jaxb-1.0.1.jar --help
 usage: java -jar android-jaxb-1.0.jar [options] your-schema-file.xsd
 ---------------------------------------------------------------------
  -b,--bindings <arg>      (optional) bindings JSON file
@@ -37,7 +37,7 @@ usage: java -jar android-jaxb-1.0.jar [options] your-schema-file.xsd
                           com.example.app
  -v,--version             Version
 ---------------------------------------------------------------------
-➜  target git:(master) ✗ java -jar android-jaxb-1.0.jar -b /Users/yeshodhan/projects/xsd-to-simplexml/src/test/resources/bindings.json -d /Users/yeshodhan/projects/xsd-to-simplexml/src/test/java -p com.mickoo.person /Users/yeshodhan/projects/xsd-to-simplexml/src/test/resources/person.xsd
+➜  target git:(master) ✗ java -jar android-jaxb-1.0.1.jar -b /Users/yeshodhan/projects/xsd-to-simplexml/src/test/resources/bindings.json -d /Users/yeshodhan/projects/xsd-to-simplexml/src/test/java -p com.mickoo.person /Users/yeshodhan/projects/xsd-to-simplexml/src/test/resources/person.xsd
 Reading bindings ...
 Code Generator Initialized. Destination Directory: /Users/yeshodhan/projects/xsd-to-simplexml/src/test/java
 [Element /Person    Min Occurs: null, Max Occurs: null ] of type [Person][Start of sequence Min Occurs: 1, Max Occurs: 1 ]
@@ -74,13 +74,13 @@ Please verify the generated classes for compile errors and syntax issues.
  
 ```bash
 ➜  xsd-to-simplexml git:(master) ✗ sudo ./install.sh
-Downloading AndroidJAXB from https://s3.amazonaws.com/yeshodhan/android-jaxb-1.0.jar
+Downloading AndroidJAXB from https://s3.amazonaws.com/yeshodhan/android-jaxb-1.0.1.jar
 % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                               Dload  Upload   Total   Spent    Left  Speed
 100 2444k  100 2444k    0     0   463k      0  0:00:05  0:00:05 --:--:--  537k
 Installing ...
 Installation Complete
-usage: java -jar android-jaxb-1.0.jar [options] your-schema-file.xsd
+usage: java -jar android-jaxb-1.0.1.jar [options] your-schema-file.xsd
 ---------------------------------------------------------------------
 -b,--bindings <arg>      (optional) bindings JSON file
 -d,--destination <arg>   destination directory for generated classes
