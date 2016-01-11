@@ -74,7 +74,7 @@ public class SchemaParser {
     }
 
     protected JType getJType(JCodeModel codeModel, String type) {
-        if ("string".equals(type)) {
+        if ("string".equals(type) || "anyURI".equals(type) || "time".equals(type)) {
             return codeModel._ref(String.class);
         } else if ("int".equals(type) || "integer".equals(type) || "byte".equals(type) || "negativeInteger".equals(type) || "nonNegativeInteger".equals(type) || "nonPositiveInteger".equals(type) || "positiveInteger".equals(type) || "short".equals(type) || "unsignedInt".equals(type) || "unsignedShort".equals(type) || "byte".equals("unsignedByte")) {
             return codeModel._ref(Integer.class);
@@ -311,16 +311,21 @@ public class SchemaParser {
 
             EnumBinding enumBinding = bindings.getEnumBinding(simpleType.getName());
 
+            String enumName = simpleType.getName();
+            if(Utils.isEmpty(enumName)) {
+                enumName = name + "Enum";
+            }
+
             GeneratedClass enumClass = codeGenerator.createEnum(
                     simpleType.getTargetNamespace(),
-                    simpleType.getName(),
+                    enumName,
                     restrictions.enumeration,
                     enumBinding
             );
 
             //add enumeration property to class
 
-            String className = NameConverter.smart.toClassName(simpleType.getName());
+            String className = NameConverter.smart.toClassName(enumName);
             if(enumBinding != null && !Utils.isEmpty(enumBinding.getClassName())) className = enumBinding.getClassName();
 
             parseContext.currentClass.addElement(
@@ -344,13 +349,17 @@ public class SchemaParser {
 
             if (parentClass != null) {
 
+                String typeName = element.getType().getName();
+                if(Utils.isEmpty(typeName)) {
+                    typeName = element.getName();
+                }
                 parseContext.currentClass = codeGenerator.createElement(
                         element.getTargetNamespace(),
-                        element.getType().getName()
+                        typeName
                 );
                 parentClass.addElement(
                         parseContext.currentClass.codeModel.parseType(
-                                NameConverter.smart.toClassName(element.getType().getName())
+                                NameConverter.smart.toClassName(typeName)
                         ),
                         element.getName(),
                         parseContext.minOccurs,
