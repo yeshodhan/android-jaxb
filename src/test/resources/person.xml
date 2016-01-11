@@ -1,4 +1,5 @@
 <Person id="1001" xmlns="http://person.mickoo.com/">
+   <Email>johndoe@example.com</Email>
    <FirstName>John</FirstName>
    <LastName>Doe</LastName>
    <Adult>true</Adult>

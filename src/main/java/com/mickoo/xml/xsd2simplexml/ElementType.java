@@ -4,5 +4,4 @@ public enum ElementType {
 	ATTRIBUTE,
 	ELEMENT,
 	TEXT
-
 }

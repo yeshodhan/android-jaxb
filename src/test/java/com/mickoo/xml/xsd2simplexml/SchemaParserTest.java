@@ -28,6 +28,8 @@ public class SchemaParserTest {
         Person person = new Person();
 
         person.setId("1001");
+
+        person.setEmail("johndoe@example.com");
         person.setFirstName("John");
         person.setLastName("Doe");
         person.setAdult(true);

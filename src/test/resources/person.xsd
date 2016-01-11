@@ -6,6 +6,7 @@
 
     <xsd:complexType name="Person">
         <xsd:sequence>
+            <xsd:element name="Email" type="Email" minOccurs="0"/>
             <xsd:element name="FirstName" type="xsd:string" minOccurs="0" />
             <xsd:element name="LastName" type="xsd:string" minOccurs="0" />
             <xsd:element name="Adult" type="xsd:boolean" minOccurs="0" />
@@ -79,5 +80,11 @@
     		</xsd:extension>
     	</xsd:simpleContent>
     </xsd:complexType>
+
+    <xsd:simpleType name="Email">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[^@]+@[^\.]+\..+"/>
+        </xsd:restriction>
+    </xsd:simpleType>
 
 </xsd:schema>

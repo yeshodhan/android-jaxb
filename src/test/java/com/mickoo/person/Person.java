@@ -19,6 +19,8 @@ import org.simpleframework.xml.Root;
 @Namespace(reference = "http://person.mickoo.com/")
 public class Person {
 
+    @Element(name = "Email", required = false)
+    private String email;
     @Element(name = "FirstName", required = false)
     private String firstName;
     @Element(name = "LastName", required = false)
@@ -41,6 +43,14 @@ public class Person {
     private String id;
 
     public Person() {
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getFirstName() {

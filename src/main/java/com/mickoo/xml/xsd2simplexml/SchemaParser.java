@@ -292,8 +292,13 @@ public class SchemaParser {
 
             //add simple element with primitive property to class
 
+            JType jType = getJType(parseContext.currentClass.codeModel, simpleType.getName());
+            if(jType == null && restrictions.pattern != null) {
+                jType = parseContext.currentClass.codeModel.ref(String.class);
+            }
+
             parseContext.currentClass.addElement(
-                    getJType(parseContext.currentClass.codeModel, simpleType.getName()),
+                    jType,
                     name,
                     parseContext.minOccurs,
                     parseContext.isUnbounded(),
