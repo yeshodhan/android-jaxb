@@ -102,9 +102,11 @@ usage: java -jar android-jaxb-1.0.jar [options] your-schema-file.xsd
             targetNamespace="http://person.mickoo.com/" elementFormDefault="qualified">
 
     <xsd:element name="Person" type="Person"/>
+    <xsd:element name="Movie" type="Movie" />
 
     <xsd:complexType name="Person">
         <xsd:sequence>
+            <xsd:element name="Email" type="Email" minOccurs="0"/>
             <xsd:element name="FirstName" type="xsd:string" minOccurs="0" />
             <xsd:element name="LastName" type="xsd:string" minOccurs="0" />
             <xsd:element name="Adult" type="xsd:boolean" minOccurs="0" />
@@ -112,6 +114,8 @@ usage: java -jar android-jaxb-1.0.jar [options] your-schema-file.xsd
             <xsd:element name="Gender" type="Gender" minOccurs="0" />
             <xsd:element name="Favorite_Fruits" type="Fruits" minOccurs="0" maxOccurs="3"/>
             <xsd:element name="SomeThing_really_whacky-by-the-user" type="xsd:string" minOccurs="0" />
+            <xsd:element name="Pets" type="Pets" minOccurs="0"/>
+            <xsd:element name="Phone" type="Phone" minOccurs="0" maxOccurs="3"/>
         </xsd:sequence>
         <xsd:attribute name="id" type="xsd:string"/>
     </xsd:complexType>
@@ -154,6 +158,41 @@ usage: java -jar android-jaxb-1.0.jar [options] your-schema-file.xsd
             <xsd:enumeration value="Grapefruit"/>
         </xsd:restriction>
     </xsd:simpleType>
+    
+    <xsd:complexType name="Pets">
+        <xsd:sequence>
+            <xsd:element name="Pet" type="Pet" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="Pet">
+    	<xsd:simpleContent>
+    		<xsd:extension base="xsd:string">
+    			<xsd:attribute name="type" type="xsd:string"/>
+    		</xsd:extension>
+    	</xsd:simpleContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="Phone">
+    	<xsd:simpleContent>
+    		<xsd:extension base="xsd:int">
+    			<xsd:attribute name="type" type="xsd:string"/>
+    		</xsd:extension>
+    	</xsd:simpleContent>
+    </xsd:complexType>
+
+    <xsd:simpleType name="Email">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[^@]+@[^\.]+\..+"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="Movie">
+        <xsd:sequence>
+            <xsd:element name="Name" type="xsd:string" minOccurs="0"/>
+            <xsd:element ref="Person" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
 
 </xsd:schema>
 ```
@@ -198,9 +237,6 @@ usage: java -jar android-jaxb-1.0.jar [options] your-schema-file.xsd
 #### Generated Java Classes
 
 ```java
-
-
-
 package com.mickoo.person;
 
 import org.simpleframework.xml.Element;
@@ -212,7 +248,7 @@ import org.simpleframework.xml.Root;
  * Address<br>
  * Generated using Android JAXB<br>
  * @link https://github.com/yeshodhan/android-jaxb
- * 
+ *
  */
 @Root(name = "Address")
 @Namespace(reference = "http://person.mickoo.com/")
@@ -296,7 +332,7 @@ import org.simpleframework.xml.Root;
  * Addresses<br>
  * Generated using Android JAXB<br>
  * @link https://github.com/yeshodhan/android-jaxb
- * 
+ *
  */
 @Root(name = "Addresses")
 @Namespace(reference = "http://person.mickoo.com/")
@@ -369,6 +405,48 @@ public enum GenderEnum {
 
 }
 
+package com.mickoo.person;
+
+import org.simpleframework.xml.Element;
+import org.simpleframework.xml.Namespace;
+import org.simpleframework.xml.Root;
+
+
+/**
+ * Movie<br>
+ * Generated using Android JAXB<br>
+ * @link https://github.com/yeshodhan/android-jaxb
+ *
+ */
+@Root(name = "Movie")
+@Namespace(reference = "http://person.mickoo.com/")
+public class Movie {
+
+    @Element(name = "Name", required = false)
+    private String name;
+    @Element(name = "Person", required = false)
+    private Person person;
+
+    public Movie() {
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
+}
 
 package com.mickoo.person;
 
@@ -384,12 +462,14 @@ import org.simpleframework.xml.Root;
  * Person<br>
  * Generated using Android JAXB<br>
  * @link https://github.com/yeshodhan/android-jaxb
- * 
+ *
  */
 @Root(name = "Person")
 @Namespace(reference = "http://person.mickoo.com/")
 public class Person {
 
+    @Element(name = "Email", required = false)
+    private String email;
     @Element(name = "FirstName", required = false)
     private String firstName;
     @Element(name = "LastName", required = false)
@@ -404,10 +484,22 @@ public class Person {
     private List<Fruits> favoriteFruits;
     @Element(name = "SomeThing_really_whacky-by-the-user", required = false)
     private String someThingReallyWhackyByTheUser;
+    @Element(name = "Pets", required = false)
+    private Pets pets;
+    @ElementList(name = "Phone", entry = "Phone", inline = true, required = false)
+    private List<Phone> phone;
     @Attribute(name = "id", required = false)
     private String id;
 
     public Person() {
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getFirstName() {
@@ -466,6 +558,22 @@ public class Person {
         this.someThingReallyWhackyByTheUser = someThingReallyWhackyByTheUser;
     }
 
+    public Pets getPets() {
+        return pets;
+    }
+
+    public void setPets(Pets pets) {
+        this.pets = pets;
+    }
+
+    public List<Phone> getPhone() {
+        return phone;
+    }
+
+    public void setPhone(List<Phone> phone) {
+        this.phone = phone;
+    }
+
     public String getId() {
         return id;
     }
@@ -476,10 +584,127 @@ public class Person {
 
 }
 
+package com.mickoo.person;
+
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Namespace;
+import org.simpleframework.xml.Root;
+import org.simpleframework.xml.Text;
 
 
+/**
+ * Pet<br>
+ * Generated using Android JAXB<br>
+ * @link https://github.com/yeshodhan/android-jaxb
+ *
+ */
+@Root(name = "Pet")
+@Namespace(reference = "http://person.mickoo.com/")
+public class Pet {
+
+    @Text(required = true)
+    private String value;
+    @Attribute(name = "type", required = false)
+    private String type;
+
+    public Pet() {
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+}
+
+package com.mickoo.person;
+
+import java.util.List;
+import org.simpleframework.xml.ElementList;
+import org.simpleframework.xml.Namespace;
+import org.simpleframework.xml.Root;
 
 
+/**
+ * Pets<br>
+ * Generated using Android JAXB<br>
+ * @link https://github.com/yeshodhan/android-jaxb
+ *
+ */
+@Root(name = "Pets")
+@Namespace(reference = "http://person.mickoo.com/")
+public class Pets {
+
+    @ElementList(name = "Pet", entry = "Pet", inline = true, required = false)
+    private List<Pet> pet;
+
+    public Pets() {
+    }
+
+    public List<Pet> getPet() {
+        return pet;
+    }
+
+    public void setPet(List<Pet> pet) {
+        this.pet = pet;
+    }
+
+}
+
+package com.mickoo.person;
+
+import org.simpleframework.xml.Attribute;
+import org.simpleframework.xml.Namespace;
+import org.simpleframework.xml.Root;
+import org.simpleframework.xml.Text;
+
+
+/**
+ * Phone<br>
+ * Generated using Android JAXB<br>
+ * @link https://github.com/yeshodhan/android-jaxb
+ *
+ */
+@Root(name = "Phone")
+@Namespace(reference = "http://person.mickoo.com/")
+public class Phone {
+
+    @Text(required = true)
+    private Integer value;
+    @Attribute(name = "type", required = false)
+    private String type;
+
+    public Phone() {
+    }
+
+    public Integer getValue() {
+        return value;
+    }
+
+    public void setValue(Integer value) {
+        this.value = value;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+}
 
 ```
 
@@ -538,6 +763,7 @@ public class Person {
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <Person id="1001" xmlns="http://person.mickoo.com/">
+   <Email>johndoe@example.com</Email>
    <FirstName>John</FirstName>
    <LastName>Doe</LastName>
    <Adult>true</Adult>
@@ -561,6 +787,13 @@ public class Person {
    <Favorite_Fruits>Apple</Favorite_Fruits>
    <Favorite_Fruits>Mango</Favorite_Fruits>
    <SomeThing_really_whacky-by-the-user>Whacky shit!</SomeThing_really_whacky-by-the-user>
+   <Pets>
+      <Pet type="Cat">Garfield</Pet>
+      <Pet type="Dog">Oddie</Pet>
+      <Pet type="Fish">Nemo</Pet>
+   </Pets>
+   <Phone type="Mobile">800800800</Phone>
+   <Phone type="Home">505050505</Phone>
 </Person>
 ```
 

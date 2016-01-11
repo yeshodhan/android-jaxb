@@ -3,6 +3,7 @@
             targetNamespace="http://person.mickoo.com/" elementFormDefault="qualified">
 
     <xsd:element name="Person" type="Person"/>
+    <xsd:element name="Movie" type="Movie" />
 
     <xsd:complexType name="Person">
         <xsd:sequence>
@@ -86,5 +87,12 @@
             <xsd:pattern value="[^@]+@[^\.]+\..+"/>
         </xsd:restriction>
     </xsd:simpleType>
+
+    <xsd:complexType name="Movie">
+        <xsd:sequence>
+            <xsd:element name="Name" type="xsd:string" minOccurs="0"/>
+            <xsd:element ref="Person" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
 
 </xsd:schema>

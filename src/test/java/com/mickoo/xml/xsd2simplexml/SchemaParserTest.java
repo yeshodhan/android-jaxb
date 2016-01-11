@@ -64,18 +64,18 @@ public class SchemaParserTest {
         address.setCity("San Jose");
         address.setState("California");
         address.setCountry("United States");
-        
+
         Pets pets = new Pets();
         person.setPets(pets);
-        
+
         List<Pet> petList = new ArrayList<Pet>();
         pets.setPet(petList);
-        
+
         Pet pet = new Pet();
         petList.add(pet);
         pet.setType("Cat");
         pet.setValue("Garfield");
-        
+
         pet = new Pet();
         petList.add(pet);
         pet.setType("Dog");
@@ -85,20 +85,20 @@ public class SchemaParserTest {
         petList.add(pet);
         pet.setType("Fish");
         pet.setValue("Nemo");
-        
+
         List<Phone> phoneList = new ArrayList<Phone>();
         person.setPhone(phoneList);
-        
+
         Phone phone = new Phone ();
         phoneList.add(phone);
         phone.setType("Mobile");
         phone.setValue(800800800);
-        
+
         phone = new Phone ();
         phoneList.add(phone);
         phone.setType("Home");
         phone.setValue(505050505);
-        
+
         File result = new File(TEST_RESOURCES_DIR+"/person.xml");
         serializer.write(person, result);
     }
