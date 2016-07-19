@@ -14,6 +14,7 @@ import org.w3c.dom.Document;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
+import java.math.BigInteger;
 import java.util.*;
 
 /**
@@ -85,7 +86,8 @@ public class SchemaParser {
         } else if ("boolean".equals(type)) {
             return codeModel._ref(Boolean.class);
         }
-        return null;
+        
+        return codeModel._ref(String.class);
     }
 
     static class ParseContext {
@@ -146,10 +148,10 @@ public class SchemaParser {
     }
 
     protected  SimpleTypeRestriction getRestrictions(XSSimpleType xsSimpleType) {
-        SimpleTypeRestriction simpleTypeRestriction = null;
+        SimpleTypeRestriction simpleTypeRestriction =  new SimpleTypeRestriction();
         XSRestrictionSimpleType restriction = xsSimpleType.asRestriction();
         if (restriction != null) {
-            simpleTypeRestriction = new SimpleTypeRestriction();
+           
             Vector<String> enumeration = new Vector<String>();
             Vector<String> pattern = new Vector<String>();
 
@@ -216,6 +218,8 @@ public class SchemaParser {
             newParseContext.indent = parseContext.indent + "\t";
             newParseContext.path = parseContext.path;
             newParseContext.currentClass = parseContext.currentClass;
+            particle.setMaxOccurs(BigInteger.valueOf(parseContext.maxOccurs.intValue()));
+            particle.setMinOccurs(BigInteger.valueOf(parseContext.minOccurs.intValue()));
             processParticle(particle, newParseContext);
         }
         logger.info(parseContext.indent + "[End of " + modelGroup.getCompositor() + "]");

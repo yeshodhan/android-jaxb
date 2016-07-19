@@ -49,7 +49,7 @@ public class GeneratedClass {
                 jAnnotationUse.param("required", false);
                 addGetterSetter(jField, fieldName, type, false);
             } else if(minOccurs == 1){
-                jAnnotationUse.param("required", true);
+                jAnnotationUse.param("required", false);
                 addGetterSetter(jField, fieldName, type, false);
             }
 
@@ -76,7 +76,7 @@ public class GeneratedClass {
                 jAnnotationUse.param("required", false);
                 addGetterSetter(jField, fieldName, type, false);
             } else if(minOccurs == 1){
-                jAnnotationUse.param("required", true);
+                jAnnotationUse.param("required", false);
                 addGetterSetter(jField, fieldName, type, false);
             }
         }
