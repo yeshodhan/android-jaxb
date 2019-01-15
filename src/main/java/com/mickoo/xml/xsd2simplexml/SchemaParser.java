@@ -4,18 +4,34 @@ import com.mickoo.xml.xsd2simplexml.bindings.Bindings;
 import com.mickoo.xml.xsd2simplexml.bindings.EnumBinding;
 import com.sun.codemodel.JCodeModel;
 import com.sun.codemodel.JType;
-import com.sun.xml.xsom.*;
+import com.sun.xml.xsom.XSAttributeDecl;
+import com.sun.xml.xsom.XSAttributeUse;
+import com.sun.xml.xsom.XSComplexType;
+import com.sun.xml.xsom.XSElementDecl;
+import com.sun.xml.xsom.XSFacet;
+import com.sun.xml.xsom.XSModelGroup;
+import com.sun.xml.xsom.XSModelGroupDecl;
+import com.sun.xml.xsom.XSParticle;
+import com.sun.xml.xsom.XSRestrictionSimpleType;
+import com.sun.xml.xsom.XSSchema;
+import com.sun.xml.xsom.XSSimpleType;
+import com.sun.xml.xsom.XSTerm;
 import com.sun.xml.xsom.parser.JAXPParser;
 import com.sun.xml.xsom.parser.XMLParser;
 import com.sun.xml.xsom.parser.XSOMParser;
+
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
-import java.math.BigInteger;
-import java.util.*;
 
 /**
  * Schema Parser
@@ -218,8 +234,8 @@ public class SchemaParser {
             newParseContext.indent = parseContext.indent + "\t";
             newParseContext.path = parseContext.path;
             newParseContext.currentClass = parseContext.currentClass;
-            particle.setMaxOccurs(BigInteger.valueOf(parseContext.maxOccurs.intValue()));
-            particle.setMinOccurs(BigInteger.valueOf(parseContext.minOccurs.intValue()));
+            newParseContext.minOccurs = particle.getMinOccurs().intValue();
+            newParseContext.maxOccurs = particle.getMaxOccurs().intValue();
             processParticle(particle, newParseContext);
         }
         logger.info(parseContext.indent + "[End of " + modelGroup.getCompositor() + "]");
@@ -263,7 +279,7 @@ public class SchemaParser {
         attributeContext.maxOccurs = 1;
         attributeContext.path = parseContext.path + "/@" + attributeDecl.getName();
 
-        System.out.print(parseContext.indent + "[Attribute " + attributeContext.path + "   " + attributeContext.getOccurs() + "] of type [" + xsSimpleType.getName() + "]");
+        System.out.println(parseContext.indent + "[Attribute " + attributeContext.path + "   " + attributeContext.getOccurs() + "] of type [" + xsSimpleType.getName() + "]");
         addSimpleType(attributeDecl.getName(), xsSimpleType, attributeContext, ElementType.ATTRIBUTE);
 
     }
@@ -278,7 +294,7 @@ public class SchemaParser {
         attributeContext.maxOccurs = 1;
         attributeContext.path = parseContext.path + "/@" + name;
 
-        System.out.print(parseContext.indent + "[Text " + attributeContext.path + "   " + attributeContext.getOccurs() + "] of type [" + xsSimpleType.getName() + "]");
+        System.out.println(parseContext.indent + "[Text " + attributeContext.path + "   " + attributeContext.getOccurs() + "] of type [" + xsSimpleType.getName() + "]");
         addSimpleType(name, xsSimpleType, attributeContext, ElementType.TEXT);
 
     }
@@ -346,7 +362,7 @@ public class SchemaParser {
 
     protected void processElement(XSElementDecl element, ParseContext parseContext) throws Exception {
         parseContext.path += "/" + element.getName();
-        System.out.print(parseContext.indent + "[Element " + parseContext.path + "   " + parseContext.getOccurs() + "] of type [" + element.getType().getName() + "]");
+        System.out.println(parseContext.indent + "[Element " + parseContext.path + "   " + parseContext.getOccurs() + "] of type [" + element.getType().getName() + "]");
         if (element.getType().isComplexType()) {
 
             GeneratedClass parentClass = parseContext.currentClass;

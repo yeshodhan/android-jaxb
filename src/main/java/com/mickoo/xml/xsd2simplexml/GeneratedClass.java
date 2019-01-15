@@ -1,6 +1,15 @@
 package com.mickoo.xml.xsd2simplexml;
 
-import com.sun.codemodel.*;
+import com.sun.codemodel.JAnnotationUse;
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JExpr;
+import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JMethod;
+import com.sun.codemodel.JMod;
+import com.sun.codemodel.JType;
+
 import org.simpleframework.xml.Attribute;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
@@ -34,7 +43,7 @@ public class GeneratedClass {
 
         if(properties.contains(fieldName)) return;
 
-        if(minOccurs > 1 || unbounded) {
+        if(minOccurs > 1 || unbounded) { // unbounded is true when maxOccurs = -1 || maxOccurs > 1
 
             JClass propertyClass = (JClass) type;
             JClass listClass = codeModel.ref(List.class);
@@ -47,10 +56,10 @@ public class GeneratedClass {
             jAnnotationUse.param("inline", true);
             if(minOccurs == 0) {
                 jAnnotationUse.param("required", false);
-                addGetterSetter(jField, fieldName, type, false);
-            } else if(minOccurs == 1){
-                jAnnotationUse.param("required", false);
-                addGetterSetter(jField, fieldName, type, false);
+                addGetterSetter(jField, fieldName, type, true);
+            } else {
+                jAnnotationUse.param("required", true);
+                addGetterSetter(jField, fieldName, type, true);
             }
 
         } else {
@@ -76,7 +85,7 @@ public class GeneratedClass {
                 jAnnotationUse.param("required", false);
                 addGetterSetter(jField, fieldName, type, false);
             } else if(minOccurs == 1){
-                jAnnotationUse.param("required", false);
+                jAnnotationUse.param("required", true);
                 addGetterSetter(jField, fieldName, type, false);
             }
         }
