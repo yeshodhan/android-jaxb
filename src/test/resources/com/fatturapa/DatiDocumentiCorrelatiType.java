@@ -1,12 +1,11 @@
 
 package com.fatturapa;
 
+import java.util.List;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Namespace;
 import org.simpleframework.xml.Root;
-
-import java.util.List;
 
 
 /**
