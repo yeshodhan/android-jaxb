@@ -37,25 +37,25 @@ public abstract class AbstractSchemaParserTest {
      * TO BE SET by subclasses
      */
     String packageName;
-    SchemaParser schemaParser;
+    private SchemaParser schemaParser;
 
     /**
      * Loaded from resourceXsdFilePath
      */
-    File xmlSchema;
+    private File xmlSchema;
     /**
      * Temporary directory
      */
-    File destinationDir;
+    private File destinationDir;
     /**
      * Loaded from bindingsJsonFilePath
      */
-    File bindingsFile;
+    private File bindingsFile;
 
     /**
      * Calculated through packageName
      */
-    String expectedResultsFolder;
+    private String expectedResultsFolder;
 
     @Before
     public void setUp() throws Exception {
@@ -78,13 +78,9 @@ public abstract class AbstractSchemaParserTest {
 
     @After
     public void tearDown() throws Exception {
-        //noinspection ResultOfMethodCallIgnored
-        Files.list(destinationDir.toPath())
-                .map(Path::toFile)
-                .forEach(File::delete);
-
-        //noinspection ResultOfMethodCallIgnored
-        destinationDir.delete();
+        if (destinationDir != null) {
+            FileUtils.deleteQuietly(destinationDir);
+        }
         schemaParser = null;
     }
 
