@@ -279,7 +279,7 @@ public class SchemaParser {
         attributeContext.maxOccurs = 1;
         attributeContext.path = parseContext.path + "/@" + attributeDecl.getName();
 
-        System.out.print(parseContext.indent + "[Attribute " + attributeContext.path + "   " + attributeContext.getOccurs() + "] of type [" + xsSimpleType.getName() + "]");
+        System.out.println(parseContext.indent + "[Attribute " + attributeContext.path + "   " + attributeContext.getOccurs() + "] of type [" + xsSimpleType.getName() + "]");
         addSimpleType(attributeDecl.getName(), xsSimpleType, attributeContext, ElementType.ATTRIBUTE);
 
     }
@@ -294,7 +294,7 @@ public class SchemaParser {
         attributeContext.maxOccurs = 1;
         attributeContext.path = parseContext.path + "/@" + name;
 
-        System.out.print(parseContext.indent + "[Text " + attributeContext.path + "   " + attributeContext.getOccurs() + "] of type [" + xsSimpleType.getName() + "]");
+        System.out.println(parseContext.indent + "[Text " + attributeContext.path + "   " + attributeContext.getOccurs() + "] of type [" + xsSimpleType.getName() + "]");
         addSimpleType(name, xsSimpleType, attributeContext, ElementType.TEXT);
 
     }
