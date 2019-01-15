@@ -1,41 +1,38 @@
 
 package com.vast;
 
-import java.util.List;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Namespace;
 import org.simpleframework.xml.Root;
 
+import java.util.List;
+
 
 /**
- * InLine<br>
+ * Wrapper<br>
  * Generated using Android JAXB<br>
  * @link https://github.com/yeshodhan/android-jaxb
  * 
  */
-@Root(name = "InLine")
+@Root(name = "Wrapper")
 @Namespace(reference = "")
-public class InLine {
+public class Wrapper {
 
     @Element(name = "AdSystem", required = true)
     private AdSystemType adSystem;
-    @Element(name = "AdTitle", required = true)
-    private String adTitle;
-    @Element(name = "Description", required = false)
-    private String description;
-    @Element(name = "Survey", required = false)
-    private String survey;
+    @Element(name = "VASTAdTagURI", required = true)
+    private String vastAdTagURI;
     @Element(name = "Error", required = false)
     private String error;
     @ElementList(name = "Impression", entry = "Impression", inline = true, required = true)
-    private List<ImpressionType> impression;
+    private List<String> impression;
     @Element(name = "Creatives", required = true)
     private Creatives creatives;
     @Element(name = "Extensions", required = false)
     private Extensions extensions;
 
-    public InLine() {
+    public Wrapper() {
     }
 
     public AdSystemType getAdSystem() {
@@ -46,28 +43,12 @@ public class InLine {
         this.adSystem = adSystem;
     }
 
-    public String getAdTitle() {
-        return adTitle;
+    public String getVastAdTagURI() {
+        return vastAdTagURI;
     }
 
-    public void setAdTitle(String adTitle) {
-        this.adTitle = adTitle;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getSurvey() {
-        return survey;
-    }
-
-    public void setSurvey(String survey) {
-        this.survey = survey;
+    public void setVastAdTagURI(String vastAdTagURI) {
+        this.vastAdTagURI = vastAdTagURI;
     }
 
     public String getError() {
@@ -78,11 +59,11 @@ public class InLine {
         this.error = error;
     }
 
-    public List<ImpressionType> getImpression() {
+    public List<String> getImpression() {
         return impression;
     }
 
-    public void setImpression(List<ImpressionType> impression) {
+    public void setImpression(List<String> impression) {
         this.impression = impression;
     }
 
