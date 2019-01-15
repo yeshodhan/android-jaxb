@@ -76,7 +76,7 @@ public class GeneratedClass {
                 jAnnotationUse.param("required", false);
                 addGetterSetter(jField, fieldName, type, false);
             } else if(minOccurs == 1){
-                jAnnotationUse.param("required", false);
+                jAnnotationUse.param("required", true);
                 addGetterSetter(jField, fieldName, type, false);
             }
         }
