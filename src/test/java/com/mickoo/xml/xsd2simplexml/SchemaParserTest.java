@@ -22,7 +22,7 @@ import static org.junit.Assert.fail;
  */
 public class SchemaParserTest {
     private static final String TEMP_DIRECTORY_NAME_PREFIX = "conversionResults";
-    private static final String PERSON_EXPECTED_RESULTS_FOLDER = "person";
+    private static final String PERSON_EXPECTED_RESULTS_FOLDER = "com/mickoo/person";
 
     private static final String PERSON_RESOURCE = "person.xsd";
     private static final String BINDINGS_JSON = "bindings.json";
@@ -103,6 +103,7 @@ public class SchemaParserTest {
                     .collect(Collectors.toList());
             final List<File> toCompareFiles = Files.list(Paths.get(personFolder.toURI()))
                     .map(Path::toFile)
+                    .filter(file -> file.getName().endsWith(".java"))
                     .collect(Collectors.toList());
 
             System.out.println(createdFiles);
