@@ -258,17 +258,17 @@ public class ComplexTypeImpl extends AttributesHolder implements XSComplexType, 
 
         if( baseType==null )    return super.getAttributeUses();
 
-        // TODO: this is fairly inefficient
-        Map<UName,XSAttributeUse> uses = new HashMap<UName, XSAttributeUse>();
-        for( XSAttributeUse a : baseType.getAttributeUses())
-            uses.put(new UName(a.getDecl()),a);
-
-        uses.keySet().removeAll(prohibitedAtts);
+        List<XSAttributeUse> uses = new ArrayList<XSAttributeUse>();
+        for( XSAttributeUse a : baseType.getAttributeUses()) {
+            if (!prohibitedAtts.contains(a.getDecl())) {
+                uses.add(a);
+            }
+        }
         
         for( XSAttributeUse a : super.getAttributeUses())
-            uses.put(new UName(a.getDecl()),a);
+            uses.add(a);
 
-        return uses.values();
+        return uses;
     }
 
     
