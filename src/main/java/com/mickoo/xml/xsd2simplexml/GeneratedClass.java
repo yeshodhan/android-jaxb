@@ -47,11 +47,10 @@ public class GeneratedClass {
             jAnnotationUse.param("inline", true);
             if(minOccurs == 0) {
                 jAnnotationUse.param("required", false);
-                addGetterSetter(jField, fieldName, type, false);
-            } else if(minOccurs == 1){
-                jAnnotationUse.param("required", false);
-                addGetterSetter(jField, fieldName, type, false);
+            } else if(minOccurs > 1){
+                jAnnotationUse.param("required", true);
             }
+            addGetterSetter(jField, fieldName, type, false);
 
         } else {
 
@@ -74,11 +73,10 @@ public class GeneratedClass {
             }
             if(minOccurs == 0) {
                 jAnnotationUse.param("required", false);
-                addGetterSetter(jField, fieldName, type, false);
             } else if(minOccurs == 1){
-                jAnnotationUse.param("required", false);
-                addGetterSetter(jField, fieldName, type, false);
+                jAnnotationUse.param("required", true);
             }
+            addGetterSetter(jField, fieldName, type, false);
         }
 
         properties.add(fieldName);

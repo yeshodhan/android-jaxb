@@ -74,20 +74,36 @@ public class SchemaParser {
         logger.info("Please verify the generated classes for compile errors and syntax issues.");
     }
 
-    protected JType getJType(JCodeModel codeModel, String type) {
-        if ("string".equals(type) || "anyURI".equals(type) || "time".equals(type)) {
-            return codeModel._ref(String.class);
-        } else if ("int".equals(type) || "integer".equals(type) || "byte".equals(type) || "negativeInteger".equals(type) || "nonNegativeInteger".equals(type) || "nonPositiveInteger".equals(type) || "positiveInteger".equals(type) || "short".equals(type) || "unsignedInt".equals(type) || "unsignedShort".equals(type) || "byte".equals("unsignedByte")) {
-            return codeModel._ref(Integer.class);
-        } else if ("long".equals(type) || "unsignedLong".equals(type)) {
-            return codeModel._ref(Long.class);
-        } else if ("decimal".equals(type)) {
-            return codeModel._ref(Double.class);
-        } else if ("boolean".equals(type)) {
-            return codeModel._ref(Boolean.class);
+    protected JType getJType(JCodeModel codeModel, String type, boolean canUsePrimitiveType) {
+        switch (type) {
+            case "int":
+            case "integer":
+            case "byte":
+            case "negativeInteger":
+            case "nonNegativeInteger":
+            case "nonPositiveInteger":
+            case "positiveInteger":
+            case "short":
+            case "unsignedInt":
+            case "unsignedShort":
+            case "unsignedByte":
+                return canUsePrimitiveType ? codeModel._ref(int.class) : codeModel._ref(Integer.class);
+            case "long":
+            case "unsignedLong":
+                return canUsePrimitiveType ? codeModel._ref(long.class) : codeModel._ref(Long.class);
+            case "decimal":
+                return canUsePrimitiveType ? codeModel._ref(double.class) : codeModel._ref(Double.class);
+            case "boolean":
+                return canUsePrimitiveType ? codeModel._ref(boolean.class) : codeModel._ref(Boolean.class);
+            case "time":
+            case "date":
+            case "dateTime":
+                return codeModel._ref(Date.class);
+            case "string":
+            case "anyURI":
+            default:
+                return codeModel._ref(String.class);
         }
-        
-        return codeModel._ref(String.class);
     }
 
     static class ParseContext {
@@ -116,6 +132,7 @@ public class SchemaParser {
         public String minLength = null;
         public String[] pattern = null;
         public String totalDigits = null;
+        public String baseType;
 
         public String toString() {
             String enumValues = "";
@@ -147,11 +164,14 @@ public class SchemaParser {
         }
     }
 
-    protected  SimpleTypeRestriction getRestrictions(XSSimpleType xsSimpleType) {
+    protected SimpleTypeRestriction getRestrictions(XSSimpleType xsSimpleType) {
         SimpleTypeRestriction simpleTypeRestriction =  new SimpleTypeRestriction();
+        simpleTypeRestriction.baseType = xsSimpleType.getName();
         XSRestrictionSimpleType restriction = xsSimpleType.asRestriction();
         if (restriction != null) {
-           
+            if (!xsSimpleType.getTargetNamespace().equals("http://www.w3.org/2001/XMLSchema")) {
+                simpleTypeRestriction.baseType = restriction.getBaseType().asSimpleType().getName();
+            }
             Vector<String> enumeration = new Vector<String>();
             Vector<String> pattern = new Vector<String>();
 
@@ -214,12 +234,15 @@ public class SchemaParser {
     protected void processGroup(XSModelGroup modelGroup, ParseContext parseContext) throws Exception {
         logger.info(parseContext.indent + "[Start of " + modelGroup.getCompositor() + parseContext.getOccurs() + "]");
         for (XSParticle particle : modelGroup.getChildren()) {
+            if (modelGroup.getCompositor() == XSModelGroup.Compositor.CHOICE) {
+                particle.setMinOccurs(BigInteger.ZERO);
+            }
             ParseContext newParseContext = new ParseContext();
             newParseContext.indent = parseContext.indent + "\t";
             newParseContext.path = parseContext.path;
             newParseContext.currentClass = parseContext.currentClass;
-            particle.setMaxOccurs(BigInteger.valueOf(parseContext.maxOccurs.intValue()));
-            particle.setMinOccurs(BigInteger.valueOf(parseContext.minOccurs.intValue()));
+            //particle.setMaxOccurs(BigInteger.valueOf(parseContext.maxOccurs.intValue()));
+            //particle.setMinOccurs(BigInteger.valueOf(parseContext.minOccurs.intValue()));
             processParticle(particle, newParseContext);
         }
         logger.info(parseContext.indent + "[End of " + modelGroup.getCompositor() + "]");
@@ -239,8 +262,8 @@ public class SchemaParser {
         if (xsSimpleType != null) {
         	processText("value", xsSimpleType, parseContext);
         }
-        Collection<? extends XSAttributeUse> c = complexType.getAttributeUses();
-        Iterator<? extends XSAttributeUse> i = c.iterator();
+        
+        Iterator<? extends XSAttributeUse> i = complexType.iterateAttributeUses();
         while(i.hasNext()) {
             XSAttributeUse attUse = i.next();
             processAttribute(attUse, parseContext);
@@ -296,11 +319,9 @@ public class SchemaParser {
 
             //add simple element with primitive property to class
 
-            JType jType = getJType(parseContext.currentClass.codeModel, simpleType.getName());
-            if(jType == null && restrictions.pattern != null) {
-                jType = parseContext.currentClass.codeModel.ref(String.class);
-            }
-
+            boolean canUsePrimitiveType = parseContext.minOccurs == 1 && parseContext.maxOccurs == 1;
+            JType jType = getJType(parseContext.currentClass.codeModel, restrictions.baseType, canUsePrimitiveType);
+            
             parseContext.currentClass.addElement(
                     jType,
                     name,
